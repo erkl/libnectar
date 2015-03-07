@@ -3,6 +3,22 @@
 
 #include <stdint.h>
 
+/* Write a 32-bit integer to dst in little-endian form. */
+static inline void le32enc(uint8_t dst[4], uint32_t x) {
+    dst[0] = (uint8_t) x;
+    dst[1] = (uint8_t) (x >> 8);
+    dst[2] = (uint8_t) (x >> 16);
+    dst[3] = (uint8_t) (x >> 24);
+}
+
+/* Read a 32-bit integer from src in little-endian form. */
+static inline uint32_t le32dec(const uint8_t src[4]) {
+    return ((uint32_t) src[0])
+         | ((uint32_t) src[1]) << 8
+         | ((uint32_t) src[2]) << 16
+         | ((uint32_t) src[3]) << 24;
+}
+
 /* Write a 64-bit integer to dst in big-endian form. */
 static inline void be64enc(uint8_t dst[8], uint64_t x) {
     dst[0] = (uint8_t) (x >> 56);
