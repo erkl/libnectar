@@ -1,9 +1,5 @@
 #include "fe25519.h"
 
-/*
-h = 0
-*/
-
 void fe_0(fe h)
 {
   h[0] = 0;
@@ -18,10 +14,6 @@ void fe_0(fe h)
   h[9] = 0;
 }
 
-/*
-h = 1
-*/
-
 void fe_1(fe h)
 {
   h[0] = 1;
@@ -35,18 +27,6 @@ void fe_1(fe h)
   h[8] = 0;
   h[9] = 0;
 }
-
-/*
-h = f + g
-Can overlap h with f or g.
-
-Preconditions:
-   |f| bounded by 1.1*2^25,1.1*2^24,1.1*2^25,1.1*2^24,etc.
-   |g| bounded by 1.1*2^25,1.1*2^24,1.1*2^25,1.1*2^24,etc.
-
-Postconditions:
-   |h| bounded by 1.1*2^26,1.1*2^25,1.1*2^26,1.1*2^25,etc.
-*/
 
 void fe_add(fe h,const fe f,const fe g)
 {
@@ -91,13 +71,6 @@ void fe_add(fe h,const fe f,const fe g)
   h[8] = h8;
   h[9] = h9;
 }
-
-/*
-Replace (f,g) with (g,g) if b == 1;
-replace (f,g) with (f,g) if b == 0.
-
-Preconditions: b in {0,1}.
-*/
 
 void fe_cmov(fe f,const fe g,unsigned int b)
 {
@@ -154,10 +127,6 @@ void fe_cmov(fe f,const fe g,unsigned int b)
   f[9] = f9 ^ x9;
 }
 
-/*
-h = f
-*/
-
 void fe_copy(fe h,const fe f)
 {
   int32_t f0 = f[0];
@@ -181,13 +150,6 @@ void fe_copy(fe h,const fe f)
   h[8] = f8;
   h[9] = f9;
 }
-
-/*
-Replace (f,g) with (g,f) if b == 1;
-replace (f,g) with (f,g) if b == 0.
-
-Preconditions: b in {0,1}.
-*/
 
 void fe_cswap(fe f,fe g,unsigned int b)
 {
@@ -273,10 +235,6 @@ static uint64_t load_4(const uint8_t *in)
   return result;
 }
 
-/*
-Ignores top bit of h.
-*/
-
 void fe_frombytes(fe h,const uint8_t *s)
 {
   int64_t h0 = load_4(s);
@@ -337,28 +295,12 @@ void fe_invert(fe out,const fe z)
   return;
 }
 
-/*
-return 1 if f is in {1,3,5,...,q-2}
-return 0 if f is in {0,2,4,...,q-1}
-
-Preconditions:
-   |f| bounded by 1.1*2^26,1.1*2^25,1.1*2^26,1.1*2^25,etc.
-*/
-
 int fe_isnegative(const fe f)
 {
   uint8_t s[32];
   fe_tobytes(s,f);
   return s[0] & 1;
 }
-
-/*
-return 1 if f == 0
-return 0 if f != 0
-
-Preconditions:
-   |f| bounded by 1.1*2^26,1.1*2^25,1.1*2^26,1.1*2^25,etc.
-*/
 
 static const uint8_t zero[32];
 
@@ -368,38 +310,6 @@ int fe_isnonzero(const fe f)
   fe_tobytes(s,f);
   return safe_bcmp(s, zero, 32);
 }
-
-/*
-h = f * g
-Can overlap h with f or g.
-
-Preconditions:
-   |f| bounded by 1.65*2^26,1.65*2^25,1.65*2^26,1.65*2^25,etc.
-   |g| bounded by 1.65*2^26,1.65*2^25,1.65*2^26,1.65*2^25,etc.
-
-Postconditions:
-   |h| bounded by 1.01*2^25,1.01*2^24,1.01*2^25,1.01*2^24,etc.
-*/
-
-/*
-Notes on implementation strategy:
-
-Using schoolbook multiplication.
-Karatsuba would save a little in some cost models.
-
-Most multiplications by 2 and 19 are 32-bit precomputations;
-cheaper than 64-bit postcomputations.
-
-There is one remaining multiplication by 19 in the carry chain;
-one *19 precomputation can be merged into this,
-but the resulting data flow is considerably less clean.
-
-There are 12 carries below.
-10 of them are 2-way parallelizable and vectorizable.
-Can get away with 11 carries, but then data flow is much deeper.
-
-With tighter constraints on inputs can squeeze carries into int32.
-*/
 
 void fe_mul(fe h,const fe f,const fe g)
 {
@@ -423,8 +333,8 @@ void fe_mul(fe h,const fe f,const fe g)
   int32_t g7 = g[7];
   int32_t g8 = g[8];
   int32_t g9 = g[9];
-  int32_t g1_19 = 19 * g1; /* 1.959375*2^29 */
-  int32_t g2_19 = 19 * g2; /* 1.959375*2^30; still ok */
+  int32_t g1_19 = 19 * g1;
+  int32_t g2_19 = 19 * g2;
   int32_t g3_19 = 19 * g3;
   int32_t g4_19 = 19 * g4;
   int32_t g5_19 = 19 * g5;
@@ -558,55 +468,24 @@ void fe_mul(fe h,const fe f,const fe g)
   int64_t carry8;
   int64_t carry9;
 
-  /*
-  |h0| <= (1.65*1.65*2^52*(1+19+19+19+19)+1.65*1.65*2^50*(38+38+38+38+38))
-    i.e. |h0| <= 1.4*2^60; narrower ranges for h2, h4, h6, h8
-  |h1| <= (1.65*1.65*2^51*(1+1+19+19+19+19+19+19+19+19))
-    i.e. |h1| <= 1.7*2^59; narrower ranges for h3, h5, h7, h9
-  */
-
   carry0 = (h0 + (int64_t) (1<<25)) >> 26; h1 += carry0; h0 -= carry0 << 26;
   carry4 = (h4 + (int64_t) (1<<25)) >> 26; h5 += carry4; h4 -= carry4 << 26;
-  /* |h0| <= 2^25 */
-  /* |h4| <= 2^25 */
-  /* |h1| <= 1.71*2^59 */
-  /* |h5| <= 1.71*2^59 */
 
   carry1 = (h1 + (int64_t) (1<<24)) >> 25; h2 += carry1; h1 -= carry1 << 25;
   carry5 = (h5 + (int64_t) (1<<24)) >> 25; h6 += carry5; h5 -= carry5 << 25;
-  /* |h1| <= 2^24; from now on fits into int32 */
-  /* |h5| <= 2^24; from now on fits into int32 */
-  /* |h2| <= 1.41*2^60 */
-  /* |h6| <= 1.41*2^60 */
 
   carry2 = (h2 + (int64_t) (1<<25)) >> 26; h3 += carry2; h2 -= carry2 << 26;
   carry6 = (h6 + (int64_t) (1<<25)) >> 26; h7 += carry6; h6 -= carry6 << 26;
-  /* |h2| <= 2^25; from now on fits into int32 unchanged */
-  /* |h6| <= 2^25; from now on fits into int32 unchanged */
-  /* |h3| <= 1.71*2^59 */
-  /* |h7| <= 1.71*2^59 */
 
   carry3 = (h3 + (int64_t) (1<<24)) >> 25; h4 += carry3; h3 -= carry3 << 25;
   carry7 = (h7 + (int64_t) (1<<24)) >> 25; h8 += carry7; h7 -= carry7 << 25;
-  /* |h3| <= 2^24; from now on fits into int32 unchanged */
-  /* |h7| <= 2^24; from now on fits into int32 unchanged */
-  /* |h4| <= 1.72*2^34 */
-  /* |h8| <= 1.41*2^60 */
 
   carry4 = (h4 + (int64_t) (1<<25)) >> 26; h5 += carry4; h4 -= carry4 << 26;
   carry8 = (h8 + (int64_t) (1<<25)) >> 26; h9 += carry8; h8 -= carry8 << 26;
-  /* |h4| <= 2^25; from now on fits into int32 unchanged */
-  /* |h8| <= 2^25; from now on fits into int32 unchanged */
-  /* |h5| <= 1.01*2^24 */
-  /* |h9| <= 1.71*2^59 */
 
   carry9 = (h9 + (int64_t) (1<<24)) >> 25; h0 += carry9 * 19; h9 -= carry9 << 25;
-  /* |h9| <= 2^24; from now on fits into int32 unchanged */
-  /* |h0| <= 1.1*2^39 */
 
   carry0 = (h0 + (int64_t) (1<<25)) >> 26; h1 += carry0; h0 -= carry0 << 26;
-  /* |h0| <= 2^25; from now on fits into int32 unchanged */
-  /* |h1| <= 1.01*2^24 */
 
   h[0] = h0;
   h[1] = h1;
@@ -619,17 +498,6 @@ void fe_mul(fe h,const fe f,const fe g)
   h[8] = h8;
   h[9] = h9;
 }
-
-/*
-h = f * 121666
-Can overlap h with f.
-
-Preconditions:
-   |f| bounded by 1.1*2^26,1.1*2^25,1.1*2^26,1.1*2^25,etc.
-
-Postconditions:
-   |h| bounded by 1.1*2^25,1.1*2^24,1.1*2^25,1.1*2^24,etc.
-*/
 
 void fe_mul121666(fe h,const fe f)
 {
@@ -688,16 +556,6 @@ void fe_mul121666(fe h,const fe f)
   h[9] = h9;
 }
 
-/*
-h = -f
-
-Preconditions:
-   |f| bounded by 1.1*2^25,1.1*2^24,1.1*2^25,1.1*2^24,etc.
-
-Postconditions:
-   |h| bounded by 1.1*2^25,1.1*2^24,1.1*2^25,1.1*2^24,etc.
-*/
-
 void fe_neg(fe h,const fe f)
 {
   int32_t f0 = f[0];
@@ -744,21 +602,6 @@ void fe_pow22523(fe out,const fe z)
   return;
 }
 
-/*
-h = f * f
-Can overlap h with f.
-
-Preconditions:
-   |f| bounded by 1.65*2^26,1.65*2^25,1.65*2^26,1.65*2^25,etc.
-
-Postconditions:
-   |h| bounded by 1.01*2^25,1.01*2^24,1.01*2^25,1.01*2^24,etc.
-*/
-
-/*
-See fe_mul.c for discussion of implementation strategy.
-*/
-
 void fe_sq(fe h,const fe f)
 {
   int32_t f0 = f[0];
@@ -779,11 +622,11 @@ void fe_sq(fe h,const fe f)
   int32_t f5_2 = 2 * f5;
   int32_t f6_2 = 2 * f6;
   int32_t f7_2 = 2 * f7;
-  int32_t f5_38 = 38 * f5; /* 1.959375*2^30 */
-  int32_t f6_19 = 19 * f6; /* 1.959375*2^30 */
-  int32_t f7_38 = 38 * f7; /* 1.959375*2^30 */
-  int32_t f8_19 = 19 * f8; /* 1.959375*2^30 */
-  int32_t f9_38 = 38 * f9; /* 1.959375*2^30 */
+  int32_t f5_38 = 38 * f5;
+  int32_t f6_19 = 19 * f6;
+  int32_t f7_38 = 38 * f7;
+  int32_t f8_19 = 19 * f8;
+  int32_t f9_38 = 38 * f9;
   int64_t f0f0    = f0   * (int64_t) f0;
   int64_t f0f1_2  = f0_2 * (int64_t) f1;
   int64_t f0f2_2  = f0_2 * (int64_t) f2;
@@ -891,21 +734,6 @@ void fe_sq(fe h,const fe f)
   h[9] = h9;
 }
 
-/*
-h = 2 * f * f
-Can overlap h with f.
-
-Preconditions:
-   |f| bounded by 1.65*2^26,1.65*2^25,1.65*2^26,1.65*2^25,etc.
-
-Postconditions:
-   |h| bounded by 1.01*2^25,1.01*2^24,1.01*2^25,1.01*2^24,etc.
-*/
-
-/*
-See fe_mul.c for discussion of implementation strategy.
-*/
-
 void fe_sq2(fe h,const fe f)
 {
   int32_t f0 = f[0];
@@ -926,11 +754,11 @@ void fe_sq2(fe h,const fe f)
   int32_t f5_2 = 2 * f5;
   int32_t f6_2 = 2 * f6;
   int32_t f7_2 = 2 * f7;
-  int32_t f5_38 = 38 * f5; /* 1.959375*2^30 */
-  int32_t f6_19 = 19 * f6; /* 1.959375*2^30 */
-  int32_t f7_38 = 38 * f7; /* 1.959375*2^30 */
-  int32_t f8_19 = 19 * f8; /* 1.959375*2^30 */
-  int32_t f9_38 = 38 * f9; /* 1.959375*2^30 */
+  int32_t f5_38 = 38 * f5;
+  int32_t f6_19 = 19 * f6;
+  int32_t f7_38 = 38 * f7;
+  int32_t f8_19 = 19 * f8;
+  int32_t f9_38 = 38 * f9;
   int64_t f0f0    = f0   * (int64_t) f0;
   int64_t f0f1_2  = f0_2 * (int64_t) f1;
   int64_t f0f2_2  = f0_2 * (int64_t) f2;
@@ -1049,18 +877,6 @@ void fe_sq2(fe h,const fe f)
   h[9] = h9;
 }
 
-/*
-h = f - g
-Can overlap h with f or g.
-
-Preconditions:
-   |f| bounded by 1.1*2^25,1.1*2^24,1.1*2^25,1.1*2^24,etc.
-   |g| bounded by 1.1*2^25,1.1*2^24,1.1*2^25,1.1*2^24,etc.
-
-Postconditions:
-   |h| bounded by 1.1*2^26,1.1*2^25,1.1*2^26,1.1*2^25,etc.
-*/
-
 void fe_sub(fe h,const fe f,const fe g)
 {
   int32_t f0 = f[0];
@@ -1105,31 +921,6 @@ void fe_sub(fe h,const fe f,const fe g)
   h[9] = h9;
 }
 
-/*
-Preconditions:
-  |h| bounded by 1.1*2^26,1.1*2^25,1.1*2^26,1.1*2^25,etc.
-
-Write p=2^255-19; q=floor(h/p).
-Basic claim: q = floor(2^(-255)(h + 19 2^(-25)h9 + 2^(-1))).
-
-Proof:
-  Have |h|<=p so |q|<=1 so |19^2 2^(-255) q|<1/4.
-  Also have |h-2^230 h9|<2^231 so |19 2^(-255)(h-2^230 h9)|<1/4.
-
-  Write y=2^(-1)-19^2 2^(-255)q-19 2^(-255)(h-2^230 h9).
-  Then 0<y<1.
-
-  Write r=h-pq.
-  Have 0<=r<=p-1=2^255-20.
-  Thus 0<=r+19(2^-255)r<r+19(2^-255)2^255<=2^255-1.
-
-  Write x=r+19(2^-255)r+y.
-  Then 0<x<2^255 so floor(2^(-255)x) = 0 so floor(q+2^(-255)x) = q.
-
-  Have q+2^(-255)x = 2^(-255)(h + 19 2^(-25) h9 + 2^(-1))
-  so floor(2^(-255)(h + 19 2^(-25) h9 + 2^(-1))) = q.
-*/
-
 void fe_tobytes(uint8_t *s,const fe h)
 {
   int32_t h0 = h[0];
@@ -1166,9 +957,7 @@ void fe_tobytes(uint8_t *s,const fe h)
   q = (h8 + q) >> 26;
   q = (h9 + q) >> 25;
 
-  /* Goal: Output h-(2^255-19)q, which is between 0 and 2^255-20. */
   h0 += 19 * q;
-  /* Goal: Output h-2^255 q, which is between 0 and 2^255-20. */
 
   carry0 = h0 >> 26; h1 += carry0; h0 -= carry0 << 26;
   carry1 = h1 >> 25; h2 += carry1; h1 -= carry1 << 25;
@@ -1180,14 +969,6 @@ void fe_tobytes(uint8_t *s,const fe h)
   carry7 = h7 >> 25; h8 += carry7; h7 -= carry7 << 25;
   carry8 = h8 >> 26; h9 += carry8; h8 -= carry8 << 26;
   carry9 = h9 >> 25;               h9 -= carry9 << 25;
-                  /* h10 = carry9 */
-
-  /*
-  Goal: Output h0+...+2^255 h10-2^255 q, which is between 0 and 2^255-20.
-  Have h0+...+2^230 h9 between 0 and 2^255-1;
-  evidently 2^255 h10-2^255 q = 0.
-  Goal: Output h0+...+2^230 h9.
-  */
 
   s[0] = h0 >> 0;
   s[1] = h0 >> 8;

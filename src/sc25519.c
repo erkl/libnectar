@@ -19,17 +19,6 @@ static uint64_t load_4(const uint8_t *in)
   return result;
 }
 
-/*
-Input:
-  a[0]+256*a[1]+...+256^31*a[31] = a
-  b[0]+256*b[1]+...+256^31*b[31] = b
-  c[0]+256*c[1]+...+256^31*c[31] = c
-
-Output:
-  s[0]+256*s[1]+...+256^31*s[31] = (ab+c) mod l
-  where l = 2^252 + 27742317777372353535851937790883648493.
-*/
-
 void sc_muladd(uint8_t *s,const uint8_t *a,const uint8_t *b,const uint8_t *c)
 {
   int64_t a0 = 2097151 & load_3(a);
@@ -363,16 +352,6 @@ void sc_muladd(uint8_t *s,const uint8_t *a,const uint8_t *b,const uint8_t *c)
   s[30] = s11 >> 9;
   s[31] = s11 >> 17;
 }
-
-/*
-Input:
-  s[0]+256*s[1]+...+256^63*s[63] = s
-
-Output:
-  s[0]+256*s[1]+...+256^31*s[31] = s mod l
-  where l = 2^252 + 27742317777372353535851937790883648493.
-  Overwrites s in place.
-*/
 
 void sc_reduce(uint8_t *s)
 {

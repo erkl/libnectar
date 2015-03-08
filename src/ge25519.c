@@ -1,9 +1,5 @@
 #include "ge25519.h"
 
-/*
-r = p + q
-*/
-
 void ge_add(ge_p1p1 *r,const ge_p3 *p,const ge_cached *q)
 {
   fe t0;
@@ -46,18 +42,11 @@ static ge_precomp Bi[8] = {
 #include "ref10/base2.h"
 } ;
 
-/*
-r = a * A + b * B
-where a = a[0]+256*a[1]+...+256^31 a[31].
-and b = b[0]+256*b[1]+...+256^31 b[31].
-B is the Ed25519 base point (x,4/5) with x positive.
-*/
-
 void ge_double_scalarmult_vartime(ge_p2 *r,const uint8_t *a,const ge_p3 *A,const uint8_t *b)
 {
   int8_t aslide[256];
   int8_t bslide[256];
-  ge_cached Ai[8]; /* A,3A,5A,7A,9A,11A,13A,15A */
+  ge_cached Ai[8];
   ge_p1p1 t;
   ge_p3 u;
   ge_p3 A2;
@@ -125,24 +114,24 @@ int ge_frombytes_negate_vartime(ge_p3 *h,const uint8_t *s)
   fe_1(h->Z);
   fe_sq(u,h->Y);
   fe_mul(v,u,d);
-  fe_sub(u,u,h->Z);       /* u = y^2-1 */
-  fe_add(v,v,h->Z);       /* v = dy^2+1 */
+  fe_sub(u,u,h->Z);
+  fe_add(v,v,h->Z);
 
   fe_sq(v3,v);
-  fe_mul(v3,v3,v);        /* v3 = v^3 */
+  fe_mul(v3,v3,v);
   fe_sq(h->X,v3);
   fe_mul(h->X,h->X,v);
-  fe_mul(h->X,h->X,u);    /* x = uv^7 */
+  fe_mul(h->X,h->X,u);
 
-  fe_pow22523(h->X,h->X); /* x = (uv^7)^((q-5)/8) */
+  fe_pow22523(h->X,h->X);
   fe_mul(h->X,h->X,v3);
-  fe_mul(h->X,h->X,u);    /* x = uv^3(uv^7)^((q-5)/8) */
+  fe_mul(h->X,h->X,u);
 
   fe_sq(vxx,h->X);
   fe_mul(vxx,vxx,v);
-  fe_sub(check,vxx,u);    /* vx^2-u */
+  fe_sub(check,vxx,u);
   if (fe_isnonzero(check)) {
-    fe_add(check,vxx,u);  /* vx^2+u */
+    fe_add(check,vxx,u);
     if (fe_isnonzero(check)) return -1;
     fe_mul(h->X,h->X,sqrtm1);
   }
@@ -154,19 +143,11 @@ int ge_frombytes_negate_vartime(ge_p3 *h,const uint8_t *s)
   return 0;
 }
 
-/*
-r = p + q
-*/
-
 void ge_madd(ge_p1p1 *r,const ge_p3 *p,const ge_precomp *q)
 {
   fe t0;
 #include "ref10/ge_madd.h"
 }
-
-/*
-r = p - q
-*/
 
 void ge_msub(ge_p1p1 *r,const ge_p3 *p,const ge_precomp *q)
 {
@@ -174,20 +155,12 @@ void ge_msub(ge_p1p1 *r,const ge_p3 *p,const ge_precomp *q)
 #include "ref10/ge_msub.h"
 }
 
-/*
-r = p
-*/
-
 extern void ge_p1p1_to_p2(ge_p2 *r,const ge_p1p1 *p)
 {
   fe_mul(r->X,p->X,p->T);
   fe_mul(r->Y,p->Y,p->Z);
   fe_mul(r->Z,p->Z,p->T);
 }
-
-/*
-r = p
-*/
 
 extern void ge_p1p1_to_p3(ge_p3 *r,const ge_p1p1 *p)
 {
@@ -204,10 +177,6 @@ void ge_p2_0(ge_p2 *h)
   fe_1(h->Z);
 }
 
-/*
-r = 2 * p
-*/
-
 void ge_p2_dbl(ge_p1p1 *r,const ge_p2 *p)
 {
   fe t0;
@@ -222,20 +191,12 @@ void ge_p3_0(ge_p3 *h)
   fe_0(h->T);
 }
 
-/*
-r = 2 * p
-*/
-
 void ge_p3_dbl(ge_p1p1 *r,const ge_p3 *p)
 {
   ge_p2 q;
   ge_p3_to_p2(&q,p);
   ge_p2_dbl(r,&q);
 }
-
-/*
-r = p
-*/
 
 static const fe d2 = {
 #include "ref10/d2.h"
@@ -248,10 +209,6 @@ extern void ge_p3_to_cached(ge_cached *r,const ge_p3 *p)
   fe_copy(r->Z,p->Z);
   fe_mul(r->T2d,p->T,d2);
 }
-
-/*
-r = p
-*/
 
 extern void ge_p3_to_p2(ge_p2 *r,const ge_p3 *p)
 {
@@ -284,17 +241,17 @@ static uint8_t equal(int8_t b,int8_t c)
 {
   uint8_t ub = b;
   uint8_t uc = c;
-  uint8_t x = ub ^ uc; /* 0: yes; 1..255: no */
-  uint32_t y = x; /* 0: yes; 1..255: no */
-  y -= 1; /* 4294967295: yes; 0..254: no */
-  y >>= 31; /* 1: yes; 0: no */
+  uint8_t x = ub ^ uc;
+  uint32_t y = x;
+  y -= 1;
+  y >>= 31;
   return y;
 }
 
 static uint8_t negative(int8_t b)
 {
-  unsigned long long x = b; /* 18446744073709551361..18446744073709551615: yes; 0..255: no */
-  x >>= 63; /* 1: yes; 0: no */
+  unsigned long long x = b;
+  x >>= 63;
   return x;
 }
 
@@ -305,7 +262,6 @@ static void cmov(ge_precomp *t,ge_precomp *u,uint8_t b)
   fe_cmov(t->xy2d,u->xy2d,b);
 }
 
-/* base[i][j] = (j+1)*256^i*B */
 static ge_precomp base[32][8] = {
 #include "ref10/base.h"
 } ;
@@ -331,15 +287,6 @@ static void select(ge_precomp *t,int pos,int8_t b)
   cmov(t,&minust,bnegative);
 }
 
-/*
-h = a * B
-where a = a[0]+256*a[1]+...+256^31 a[31]
-B is the Ed25519 base point (x,4/5) with x positive.
-
-Preconditions:
-  a[31] <= 127
-*/
-
 void ge_scalarmult_base(ge_p3 *h,const uint8_t *a)
 {
   int8_t e[64];
@@ -353,8 +300,6 @@ void ge_scalarmult_base(ge_p3 *h,const uint8_t *a)
     e[2 * i + 0] = (a[i] >> 0) & 15;
     e[2 * i + 1] = (a[i] >> 4) & 15;
   }
-  /* each e[i] is between 0 and 15 */
-  /* e[63] is between 0 and 7 */
 
   carry = 0;
   for (i = 0;i < 63;++i) {
@@ -364,7 +309,6 @@ void ge_scalarmult_base(ge_p3 *h,const uint8_t *a)
     e[i] -= carry << 4;
   }
   e[63] += carry;
-  /* each e[i] is between -8 and 8 */
 
   ge_p3_0(h);
   for (i = 1;i < 64;i += 2) {
@@ -382,10 +326,6 @@ void ge_scalarmult_base(ge_p3 *h,const uint8_t *a)
     ge_madd(&r,h,&t); ge_p1p1_to_p3(h,&r);
   }
 }
-
-/*
-r = p - q
-*/
 
 void ge_sub(ge_p1p1 *r,const ge_p3 *p,const ge_cached *q)
 {
