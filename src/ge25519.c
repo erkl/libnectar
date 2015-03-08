@@ -1,4 +1,4 @@
-#include "ge.h"
+#include "ge25519.h"
 
 /*
 r = p + q
@@ -9,7 +9,6 @@ void ge_add(ge_p1p1 *r,const ge_p3 *p,const ge_cached *q)
   fe t0;
 #include "ge_add.h"
 }
-#include "ge.h"
 
 static void slide(int8_t *r,const uint8_t *a)
 {
@@ -105,7 +104,6 @@ void ge_double_scalarmult_vartime(ge_p2 *r,const uint8_t *a,const ge_p3 *A,const
     ge_p1p1_to_p2(r,&t);
   }
 }
-#include "ge.h"
 
 static const fe d = {
 #include "d.h"
@@ -155,7 +153,6 @@ int ge_frombytes_negate_vartime(ge_p3 *h,const uint8_t *s)
   fe_mul(h->T,h->X,h->Y);
   return 0;
 }
-#include "ge.h"
 
 /*
 r = p + q
@@ -166,7 +163,6 @@ void ge_madd(ge_p1p1 *r,const ge_p3 *p,const ge_precomp *q)
   fe t0;
 #include "ge_madd.h"
 }
-#include "ge.h"
 
 /*
 r = p - q
@@ -177,7 +173,6 @@ void ge_msub(ge_p1p1 *r,const ge_p3 *p,const ge_precomp *q)
   fe t0;
 #include "ge_msub.h"
 }
-#include "ge.h"
 
 /*
 r = p
@@ -189,7 +184,6 @@ extern void ge_p1p1_to_p2(ge_p2 *r,const ge_p1p1 *p)
   fe_mul(r->Y,p->Y,p->Z);
   fe_mul(r->Z,p->Z,p->T);
 }
-#include "ge.h"
 
 /*
 r = p
@@ -202,7 +196,6 @@ extern void ge_p1p1_to_p3(ge_p3 *r,const ge_p1p1 *p)
   fe_mul(r->Z,p->Z,p->T);
   fe_mul(r->T,p->X,p->Y);
 }
-#include "ge.h"
 
 void ge_p2_0(ge_p2 *h)
 {
@@ -210,7 +203,6 @@ void ge_p2_0(ge_p2 *h)
   fe_1(h->Y);
   fe_1(h->Z);
 }
-#include "ge.h"
 
 /*
 r = 2 * p
@@ -221,7 +213,6 @@ void ge_p2_dbl(ge_p1p1 *r,const ge_p2 *p)
   fe t0;
 #include "ge_p2_dbl.h"
 }
-#include "ge.h"
 
 void ge_p3_0(ge_p3 *h)
 {
@@ -230,7 +221,6 @@ void ge_p3_0(ge_p3 *h)
   fe_1(h->Z);
   fe_0(h->T);
 }
-#include "ge.h"
 
 /*
 r = 2 * p
@@ -242,7 +232,6 @@ void ge_p3_dbl(ge_p1p1 *r,const ge_p3 *p)
   ge_p3_to_p2(&q,p);
   ge_p2_dbl(r,&q);
 }
-#include "ge.h"
 
 /*
 r = p
@@ -259,7 +248,6 @@ extern void ge_p3_to_cached(ge_cached *r,const ge_p3 *p)
   fe_copy(r->Z,p->Z);
   fe_mul(r->T2d,p->T,d2);
 }
-#include "ge.h"
 
 /*
 r = p
@@ -271,7 +259,6 @@ extern void ge_p3_to_p2(ge_p2 *r,const ge_p3 *p)
   fe_copy(r->Y,p->Y);
   fe_copy(r->Z,p->Z);
 }
-#include "ge.h"
 
 void ge_p3_tobytes(uint8_t *s,const ge_p3 *h)
 {
@@ -285,7 +272,6 @@ void ge_p3_tobytes(uint8_t *s,const ge_p3 *h)
   fe_tobytes(s,y);
   s[31] ^= fe_isnegative(x) << 7;
 }
-#include "ge.h"
 
 void ge_precomp_0(ge_precomp *h)
 {
@@ -293,7 +279,6 @@ void ge_precomp_0(ge_precomp *h)
   fe_1(h->yminusx);
   fe_0(h->xy2d);
 }
-#include "ge.h"
 
 static uint8_t equal(int8_t b,int8_t c)
 {
@@ -397,7 +382,6 @@ void ge_scalarmult_base(ge_p3 *h,const uint8_t *a)
     ge_madd(&r,h,&t); ge_p1p1_to_p3(h,&r);
   }
 }
-#include "ge.h"
 
 /*
 r = p - q
@@ -408,7 +392,6 @@ void ge_sub(ge_p1p1 *r,const ge_p3 *p,const ge_cached *q)
   fe t0;
 #include "ge_sub.h"
 }
-#include "ge.h"
 
 void ge_tobytes(uint8_t *s,const ge_p2 *h)
 {

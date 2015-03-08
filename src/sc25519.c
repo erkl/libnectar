@@ -1,4 +1,4 @@
-#include "sc.h"
+#include "sc25519.h"
 
 static uint64_t load_3(const uint8_t *in)
 {
@@ -363,7 +363,6 @@ void sc_muladd(uint8_t *s,const uint8_t *a,const uint8_t *b,const uint8_t *c)
   s[30] = s11 >> 9;
   s[31] = s11 >> 17;
 }
-#include "sc.h"
 
 static uint64_t load_3(const uint8_t *in)
 {

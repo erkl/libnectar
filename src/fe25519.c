@@ -1,4 +1,4 @@
-#include "fe.h"
+#include "fe25519.h"
 
 /*
 h = 0
@@ -17,7 +17,6 @@ void fe_0(fe h)
   h[8] = 0;
   h[9] = 0;
 }
-#include "fe.h"
 
 /*
 h = 1
@@ -36,7 +35,6 @@ void fe_1(fe h)
   h[8] = 0;
   h[9] = 0;
 }
-#include "fe.h"
 
 /*
 h = f + g
@@ -93,7 +91,6 @@ void fe_add(fe h,const fe f,const fe g)
   h[8] = h8;
   h[9] = h9;
 }
-#include "fe.h"
 
 /*
 Replace (f,g) with (g,g) if b == 1;
@@ -156,7 +153,6 @@ void fe_cmov(fe f,const fe g,unsigned int b)
   f[8] = f8 ^ x8;
   f[9] = f9 ^ x9;
 }
-#include "fe.h"
 
 /*
 h = f
@@ -185,7 +181,6 @@ void fe_copy(fe h,const fe f)
   h[8] = f8;
   h[9] = f9;
 }
-#include "fe.h"
 
 /*
 Replace (f,g) with (g,f) if b == 1;
@@ -258,7 +253,6 @@ void fe_cswap(fe f,fe g,unsigned int b)
   g[8] = g8 ^ x8;
   g[9] = g9 ^ x9;
 }
-#include "fe.h"
 
 static uint64_t load_3(const uint8_t *in)
 {
@@ -329,7 +323,6 @@ void fe_frombytes(fe h,const uint8_t *s)
   h[8] = h8;
   h[9] = h9;
 }
-#include "fe.h"
 
 void fe_invert(fe out,const fe z)
 {
@@ -343,7 +336,6 @@ void fe_invert(fe out,const fe z)
 
   return;
 }
-#include "fe.h"
 
 /*
 return 1 if f is in {1,3,5,...,q-2}
@@ -359,7 +351,6 @@ int fe_isnegative(const fe f)
   fe_tobytes(s,f);
   return s[0] & 1;
 }
-#include "fe.h"
 #include "crypto_verify_32.h"
 
 /*
@@ -378,7 +369,6 @@ int fe_isnonzero(const fe f)
   fe_tobytes(s,f);
   return crypto_verify_32(s,zero);
 }
-#include "fe.h"
 
 /*
 h = f * g
@@ -630,7 +620,6 @@ void fe_mul(fe h,const fe f,const fe g)
   h[8] = h8;
   h[9] = h9;
 }
-#include "fe.h"
 
 /*
 h = f * 121666
@@ -699,7 +688,6 @@ void fe_mul121666(fe h,fe f)
   h[8] = h8;
   h[9] = h9;
 }
-#include "fe.h"
 
 /*
 h = -f
@@ -744,7 +732,6 @@ void fe_neg(fe h,const fe f)
   h[8] = h8;
   h[9] = h9;
 }
-#include "fe.h"
 
 void fe_pow22523(fe out,const fe z)
 {
@@ -757,7 +744,6 @@ void fe_pow22523(fe out,const fe z)
 
   return;
 }
-#include "fe.h"
 
 /*
 h = f * f
@@ -905,7 +891,6 @@ void fe_sq(fe h,const fe f)
   h[8] = h8;
   h[9] = h9;
 }
-#include "fe.h"
 
 /*
 h = 2 * f * f
@@ -1064,7 +1049,6 @@ void fe_sq2(fe h,const fe f)
   h[8] = h8;
   h[9] = h9;
 }
-#include "fe.h"
 
 /*
 h = f - g
@@ -1121,7 +1105,6 @@ void fe_sub(fe h,const fe f,const fe g)
   h[8] = h8;
   h[9] = h9;
 }
-#include "fe.h"
 
 /*
 Preconditions:
