@@ -7,7 +7,7 @@ r = p + q
 void ge_add(ge_p1p1 *r,const ge_p3 *p,const ge_cached *q)
 {
   fe t0;
-#include "ge_add.h"
+#include "ref10/ge_add.h"
 }
 
 static void slide(int8_t *r,const uint8_t *a)
@@ -43,7 +43,7 @@ static void slide(int8_t *r,const uint8_t *a)
 }
 
 static ge_precomp Bi[8] = {
-#include "base2.h"
+#include "ref10/base2.h"
 } ;
 
 /*
@@ -106,11 +106,11 @@ void ge_double_scalarmult_vartime(ge_p2 *r,const uint8_t *a,const ge_p3 *A,const
 }
 
 static const fe d = {
-#include "d.h"
+#include "ref10/d.h"
 } ;
 
 static const fe sqrtm1 = {
-#include "sqrtm1.h"
+#include "ref10/sqrtm1.h"
 } ;
 
 int ge_frombytes_negate_vartime(ge_p3 *h,const uint8_t *s)
@@ -161,7 +161,7 @@ r = p + q
 void ge_madd(ge_p1p1 *r,const ge_p3 *p,const ge_precomp *q)
 {
   fe t0;
-#include "ge_madd.h"
+#include "ref10/ge_madd.h"
 }
 
 /*
@@ -171,7 +171,7 @@ r = p - q
 void ge_msub(ge_p1p1 *r,const ge_p3 *p,const ge_precomp *q)
 {
   fe t0;
-#include "ge_msub.h"
+#include "ref10/ge_msub.h"
 }
 
 /*
@@ -211,7 +211,7 @@ r = 2 * p
 void ge_p2_dbl(ge_p1p1 *r,const ge_p2 *p)
 {
   fe t0;
-#include "ge_p2_dbl.h"
+#include "ref10/ge_p2_dbl.h"
 }
 
 void ge_p3_0(ge_p3 *h)
@@ -238,7 +238,7 @@ r = p
 */
 
 static const fe d2 = {
-#include "d2.h"
+#include "ref10/d2.h"
 } ;
 
 extern void ge_p3_to_cached(ge_cached *r,const ge_p3 *p)
@@ -307,7 +307,7 @@ static void cmov(ge_precomp *t,ge_precomp *u,uint8_t b)
 
 /* base[i][j] = (j+1)*256^i*B */
 static ge_precomp base[32][8] = {
-#include "base.h"
+#include "ref10/base.h"
 } ;
 
 static void select(ge_precomp *t,int pos,int8_t b)
@@ -390,7 +390,7 @@ r = p - q
 void ge_sub(ge_p1p1 *r,const ge_p3 *p,const ge_cached *q)
 {
   fe t0;
-#include "ge_sub.h"
+#include "ref10/ge_sub.h"
 }
 
 void ge_tobytes(uint8_t *s,const ge_p2 *h)

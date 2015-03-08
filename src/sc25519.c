@@ -364,25 +364,6 @@ void sc_muladd(uint8_t *s,const uint8_t *a,const uint8_t *b,const uint8_t *c)
   s[31] = s11 >> 17;
 }
 
-static uint64_t load_3(const uint8_t *in)
-{
-  uint64_t result;
-  result = (uint64_t) in[0];
-  result |= ((uint64_t) in[1]) << 8;
-  result |= ((uint64_t) in[2]) << 16;
-  return result;
-}
-
-static uint64_t load_4(const uint8_t *in)
-{
-  uint64_t result;
-  result = (uint64_t) in[0];
-  result |= ((uint64_t) in[1]) << 8;
-  result |= ((uint64_t) in[2]) << 16;
-  result |= ((uint64_t) in[3]) << 24;
-  return result;
-}
-
 /*
 Input:
   s[0]+256*s[1]+...+256^63*s[63] = s

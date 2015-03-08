@@ -332,7 +332,7 @@ void fe_invert(fe out,const fe z)
   fe t3;
   int i;
 
-#include "pow225521.h"
+#include "ref10/pow225521.h"
 
   return;
 }
@@ -351,7 +351,6 @@ int fe_isnegative(const fe f)
   fe_tobytes(s,f);
   return s[0] & 1;
 }
-#include "crypto_verify_32.h"
 
 /*
 return 1 if f == 0
@@ -367,7 +366,7 @@ int fe_isnonzero(const fe f)
 {
   uint8_t s[32];
   fe_tobytes(s,f);
-  return crypto_verify_32(s,zero);
+  return safe_bcmp(s, zero, 32);
 }
 
 /*
@@ -632,7 +631,7 @@ Postconditions:
    |h| bounded by 1.1*2^25,1.1*2^24,1.1*2^25,1.1*2^24,etc.
 */
 
-void fe_mul121666(fe h,fe f)
+void fe_mul121666(fe h,const fe f)
 {
   int32_t f0 = f[0];
   int32_t f1 = f[1];
@@ -740,7 +739,7 @@ void fe_pow22523(fe out,const fe z)
   fe t2;
   int i;
 
-#include "pow22523.h"
+#include "ref10/pow22523.h"
 
   return;
 }
