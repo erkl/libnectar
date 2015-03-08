@@ -63,4 +63,11 @@ void poly1305_init(struct poly1305_ctx * cx, const uint8_t key[32]);
 void poly1305_update(struct poly1305_ctx * cx, uint8_t * data, size_t len);
 void poly1305_final(struct poly1305_ctx * cx, uint8_t mac[16]);
 
+/* Implementation of the PBKDF2 key derivation function as defined in RFC 2898
+ * and PKCS #5 v2.0, using SHA-512 rather than MD2, MD5 or SHA-1. */
+void pbkdf2_sha512(uint8_t * key, size_t key_len,
+                   const uint8_t * salt, size_t salt_len,
+                   const uint8_t * pass, size_t pass_len,
+                   unsigned int rounds);
+
 #endif
