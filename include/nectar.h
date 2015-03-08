@@ -70,4 +70,9 @@ void pbkdf2_sha512(uint8_t * key, size_t key_len,
                    const uint8_t * pass, size_t pass_len,
                    unsigned int rounds);
 
+/* Utility function which compares two equally sized chunks of memory without
+ * leaking any information via timing side channels. Returns 0 if and only if
+ * the two chunks are identical. */
+int safe_bcmp(const uint8_t * buf0, const uint8_t * buf1, size_t len);
+
 #endif
