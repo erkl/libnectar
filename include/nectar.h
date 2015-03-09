@@ -63,6 +63,19 @@ void poly1305_init(struct poly1305_ctx * cx, const uint8_t key[32]);
 void poly1305_update(struct poly1305_ctx * cx, uint8_t * data, size_t len);
 void poly1305_final(struct poly1305_ctx * cx, uint8_t mac[16]);
 
+/* Implementation of the Curve25519 elliptic curve Diffie-Hellman key agreement
+ * scheme as defined in "Curve25519: new Diffie-Hellman speed records"
+ * (Bernstein; 2006).
+ *
+ * Any sequence of 32 bytes can be re-shaped into a valid Curve25519 secret
+ * key with the help of the `curve25519_clamp` function, and a corresponding
+ * public key can be created using `curve25519_scalarmult_base`. The
+ * `curve25519_scalarmult` function, given one party's private key and the
+ * other's public key, calculates the shared secret. */
+void curve25519_clamp(uint8_t priv[32]);
+void curve25519_scalarmult_base(uint8_t pub[32], const uint8_t priv[32]);
+void curve25519_scalarmult(uint8_t shared[32], const uint8_t priv[32], const uint8_t other_pub[32]);
+
 /* Implementation of the PBKDF2 key derivation function as defined in RFC 2898
  * and PKCS #5 v2.0, using SHA-512 rather than MD2, MD5 or SHA-1. */
 void pbkdf2_sha512(uint8_t * key, size_t key_len,
