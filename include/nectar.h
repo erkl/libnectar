@@ -5,6 +5,29 @@
 #include <stdint.h>
 #include <string.h>
 
+/* Namespacing. */
+#define  sha512_ctx                  nectar__sha512_ctx
+#define  sha512_init                 nectar__sha512_init
+#define  sha512_update               nectar__sha512_update
+#define  sha512_final                nectar__sha512_final
+#define  chacha20_ctx                nectar__chacha20_ctx
+#define  chacha20_init               nectar__chacha20_init
+#define  chacha20_seek               nectar__chacha20_seek
+#define  chacha20_tell               nectar__chacha20_tell
+#define  chacha20_xor                nectar__chacha20_xor
+#define  poly1305_ctx                nectar__poly1305_ctx
+#define  poly1305_init               nectar__poly1305_init
+#define  poly1305_update             nectar__poly1305_update
+#define  poly1305_final              nectar__poly1305_final
+#define  curve25519_clamp            nectar__curve25519_clamp
+#define  curve25519_scalarmult_base  nectar__curve25519_scalarmult_base
+#define  curve25519_scalarmult       nectar__curve25519_scalarmult
+#define  ed25519_pubkey              nectar__ed25519_pubkey
+#define  ed25519_sign                nectar__ed25519_sign
+#define  ed25519_verify              nectar__ed25519_verify
+#define  pbkdf2_sha512               nectar__pbkdf2_sha512
+#define  safe_bcmp                   nectar__safe_bcmp
+
 /* Implementation of the SHA-512 hash algorithm as defined in FIPS 180-2.
  *
  * The context object is initialized with `sha512_init`, and fed data with
