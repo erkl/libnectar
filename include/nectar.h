@@ -76,6 +76,19 @@ void curve25519_clamp(uint8_t priv[32]);
 void curve25519_scalarmult_base(uint8_t pub[32], const uint8_t priv[32]);
 void curve25519_scalarmult(uint8_t shared[32], const uint8_t priv[32], const uint8_t other_pub[32]);
 
+/* Implementation of the Ed25519 digital signature scheme as defined in
+ * "High-speed high-security signatures" (Bernstein, Duif, Lange, Schwabe,
+ * Yang; 2011).
+ *
+ * The `ed25519_pubkey` function generates a valid Ed25519 public key from any
+ * sequence of 32 bytes. This public key, together with the private key, can
+ * then be used to generate a 64-byte signature for any chunk of data using
+ * `ed25519_sign`. Signatures can be verified in constant time with the
+ * `ed25519_verify` function. */
+void ed25519_pubkey(uint8_t pub[32], const uint8_t priv[32]);
+void ed25519_sign(uint8_t sign[64], const uint8_t * data, size_t len, const uint8_t pub[32], const uint8_t priv[32]);
+int ed25519_verify(const uint8_t sign[64], const uint8_t * data, size_t len, const uint8_t pub[32]);
+
 /* Implementation of the PBKDF2 key derivation function as defined in RFC 2898
  * and PKCS #5 v2.0, using SHA-512 rather than MD2, MD5 or SHA-1. */
 void pbkdf2_sha512(uint8_t * key, size_t key_len,
