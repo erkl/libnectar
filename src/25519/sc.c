@@ -1,4 +1,4 @@
-#include "sc25519.h"
+#include "sc.h"
 
 static uint64_t load_3(const uint8_t *in)
 {

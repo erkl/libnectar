@@ -1,4 +1,4 @@
-#include "ge25519.h"
+#include "ge.h"
 
 void ge_add(ge_p1p1 *r,const ge_p3 *p,const ge_cached *q)
 {

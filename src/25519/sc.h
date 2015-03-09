@@ -1,11 +1,11 @@
-#ifndef NECTAR_SC25519_H
-#define NECTAR_SC25519_H
+#ifndef NECTAR_25519_SC_H
+#define NECTAR_25519_SC_H
 
 #include "nectar.h"
 
 /* Namespacing. */
-#define  sc_muladd  nectar_sc25519_muladd
-#define  sc_reduce  nectar_sc25519_reduce
+#define  sc_muladd  nectar__25519_sc_muladd
+#define  sc_reduce  nectar__25519_sc_reduce
 
 /* Functions. */
 void sc_muladd(uint8_t * s, const uint8_t * a, const uint8_t * b, const uint8_t * c);
