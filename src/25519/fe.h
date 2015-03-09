@@ -1,5 +1,5 @@
-#ifndef NECTAR_25519_FE_H
-#define NECTAR_25519_FE_H
+#ifndef LIBNECTAR_25519_FE_H
+#define LIBNECTAR_25519_FE_H
 
 #include "nectar.h"
 

@@ -1,5 +1,5 @@
-#ifndef NECTAR_H
-#define NECTAR_H
+#ifndef LIBNECTAR_H
+#define LIBNECTAR_H
 
 #include <stddef.h>
 #include <stdint.h>

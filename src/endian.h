@@ -1,5 +1,5 @@
-#ifndef NECTAR_ENDIAN_H
-#define NECTAR_ENDIAN_H
+#ifndef LIBNECTAR_ENDIAN_H
+#define LIBNECTAR_ENDIAN_H
 
 #include <stdint.h>
 
