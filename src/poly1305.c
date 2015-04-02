@@ -40,9 +40,8 @@ static const uint8_t P[16] = {
 
 
 /* Inner block processing algorithm. */
-static size_t poly1305_blocks(struct poly1305_ctx * cx,
-                              uint8_t * data, size_t len,
-                              int final) {
+static size_t blocks(struct nectar_poly1305_ctx * cx,
+                     uint8_t * data, size_t len, int final) {
     uint32_t r0, r1, r2, r3, r4;
     uint32_t s1, s2, s3, s4;
     uint32_t h0, h1, h2, h3, h4;
@@ -157,14 +156,14 @@ void nectar_poly1305_update(struct nectar_poly1305_ctx * cx, uint8_t * data, siz
         memcpy(&cx->buf[cx->rem], data, n);
         cx->rem = 0;
 
-        poly1305_blocks(cx, cx->buf, 16, 0);
+        blocks(cx, cx->buf, 16, 0);
         data += n;
         len -= n;
     }
 
     /* Process as many chunks of 16 bytes as possible. */
     if (len >= 16) {
-        n = poly1305_blocks(cx, data, len, 0);
+        n = blocks(cx, data, len, 0);
         data += n;
         len -= n;
     }
@@ -188,7 +187,7 @@ void nectar_poly1305_final(struct nectar_poly1305_ctx * cx, uint8_t mac[16]) {
      * space with padding and process one last block. */
     if (cx->rem > 0) {
         memcpy(&cx->buf[cx->rem], P, 16 - cx->rem);
-        poly1305_blocks(cx, cx->buf, 16, 1);
+        blocks(cx, cx->buf, 16, 1);
     }
 
     h0 = cx->h[0];

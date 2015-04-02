@@ -46,7 +46,7 @@
 
 
 /* Inner keystream generation algorithm. */
-static void chacha20_generate(uint8_t dst[64], const uint32_t state[16]) {
+static void generate(uint8_t dst[64], const uint32_t state[16]) {
     uint32_t x[16];
     uint32_t t;
     int i;
@@ -135,7 +135,7 @@ void nectar_chacha20_xor(struct nectar_chacha20_ctx * cx, uint8_t * dst,
         off = (size_t) (cx->offset % 64);
         num = (len < 64 - off ? len : 64 - off);
 
-        chacha20_generate(tmp, cx->state);
+        generate(tmp, cx->state);
         for (i = 0; i < num; i++)
             dst[i] = src[i] ^ tmp[i + off];
 

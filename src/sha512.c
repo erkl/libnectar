@@ -70,7 +70,7 @@ static const uint8_t P[128] = {
 };
 
 
-/* Core operations used by the `sha512_transform` function. */
+/* Core operations used by the `transform` function. */
 #define ch(x,y,z)  ((x & (y^z)) ^ z)
 #define maj(x,y,z) ((x & (y|z)) | (y&z))
 
@@ -89,7 +89,7 @@ static const uint8_t P[128] = {
 
 
 /* Apply the core SHA-512 transformation. */
-static void sha512_transform(uint64_t state[8], const uint8_t block[128]) {
+static void transform(uint64_t state[8], const uint8_t block[128]) {
     uint64_t W[80];
     uint64_t A, B, C, D, E, F, G, H;
     uint64_t t0, t1;
@@ -181,14 +181,14 @@ void nectar_sha512_update(struct nectar_sha512_ctx * cx, const uint8_t * data, s
 
         /* Finish this block. */
         memcpy(&cx->buf[rem], data, 128 - rem);
-        sha512_transform(cx->state, cx->buf);
+        transform(cx->state, cx->buf);
         data += 128 - rem;
         len -= 128 - rem;
     }
 
     /* Transform full blocks, one at a time. */
     while (len >= 128) {
-        sha512_transform(cx->state, data);
+        transform(cx->state, data);
         data += 128;
         len -= 128;
     }
