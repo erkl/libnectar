@@ -32,6 +32,7 @@
 #include "25519/ge.h"
 #include "25519/sc.h"
 
+
 /* Generate a public key from a secret key. */
 void nectar_ed25519_pubkey(uint8_t pk[32], const uint8_t sk[32]) {
     struct nectar_sha512_ctx h;
@@ -49,6 +50,7 @@ void nectar_ed25519_pubkey(uint8_t pk[32], const uint8_t sk[32]) {
     ge_scalarmult_base(&A, az);
     ge_p3_tobytes(pk, &A);
 }
+
 
 /* Sign a message. */
 void nectar_ed25519_sign(uint8_t sign[64], const uint8_t *message, size_t len,
@@ -86,6 +88,7 @@ void nectar_ed25519_sign(uint8_t sign[64], const uint8_t *message, size_t len,
     sc_reduce(hram);
     sc_muladd(sign + 32, hram, az, nonce);
 }
+
 
 /* Verify a message signature. */
 int nectar_ed25519_verify(const uint8_t sign[64], const uint8_t *message, size_t len,

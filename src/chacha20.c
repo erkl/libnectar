@@ -31,6 +31,7 @@
 #include "nectar.h"
 #include "endian.h"
 
+
 /* Core operations. */
 #define rotl32(v, n)                                                           \
     (((v) << (n)) | ((v) >> (32 - (n))))
@@ -42,6 +43,7 @@
         x[a] += x[b];  t = x[d] ^ x[a];  x[d] = rotl32(t,  8);                 \
         x[c] += x[d];  t = x[b] ^ x[c];  x[b] = rotl32(t,  7);                 \
     } while (0)
+
 
 /* Inner keystream generation algorithm. */
 static void chacha20_generate(uint8_t dst[64], const uint32_t state[16]) {
@@ -74,6 +76,7 @@ static void chacha20_generate(uint8_t dst[64], const uint32_t state[16]) {
         le32enc(&dst[4*i], x[i]);
 }
 
+
 /* Initialize the context structure. */
 void nectar_chacha20_init(struct nectar_chacha20_ctx * cx, const uint8_t key[32],
                           const uint8_t iv[8]) {
@@ -101,15 +104,18 @@ void nectar_chacha20_init(struct nectar_chacha20_ctx * cx, const uint8_t key[32]
     cx->offset = 0;
 }
 
+
 /* Seek to an absolute keystream offset. */
 void nectar_chacha20_seek(struct nectar_chacha20_ctx * cx, uint64_t offset) {
     cx->offset = offset;
 }
 
+
 /* Get the current keystream offset. */
 uint64_t nectar_chacha20_tell(struct nectar_chacha20_ctx * cx) {
     return cx->offset;
 }
+
 
 /* XOR `len` bytes from the keystream with `src` into `dst`. The `src` and
  * `dst` slices may only overlap if `dst <= src`. */

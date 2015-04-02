@@ -31,11 +31,13 @@
 #include "nectar.h"
 #include "endian.h"
 
+
 /* Padding material. */
 static const uint8_t P[16] = {
     0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
 };
+
 
 /* Inner block processing algorithm. */
 static size_t poly1305_blocks(struct poly1305_ctx * cx,
@@ -104,6 +106,7 @@ static size_t poly1305_blocks(struct poly1305_ctx * cx,
     return total - len;
 }
 
+
 /* Initialize the context structure. */
 void nectar_poly1305_init(struct nectar_poly1305_ctx * cx, const uint8_t key[32]) {
     /* Initialize r and h. */
@@ -128,6 +131,7 @@ void nectar_poly1305_init(struct nectar_poly1305_ctx * cx, const uint8_t key[32]
     /* The buffer obviously starts out empty. */
     cx->rem = 0;
 }
+
 
 /* Feed the context more data. */
 void nectar_poly1305_update(struct nectar_poly1305_ctx * cx, uint8_t * data, size_t len) {
@@ -171,6 +175,7 @@ void nectar_poly1305_update(struct nectar_poly1305_ctx * cx, uint8_t * data, siz
         cx->rem += len;
     }
 }
+
 
 /* Generate the final message authentication code. */
 void nectar_poly1305_final(struct nectar_poly1305_ctx * cx, uint8_t mac[16]) {

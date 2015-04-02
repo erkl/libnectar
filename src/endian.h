@@ -33,6 +33,7 @@
 
 #include <stdint.h>
 
+
 /* Write a 32-bit integer to dst in little-endian form. */
 static inline void le32enc(uint8_t dst[4], uint32_t x) {
     dst[0] = (uint8_t) x;
@@ -41,6 +42,7 @@ static inline void le32enc(uint8_t dst[4], uint32_t x) {
     dst[3] = (uint8_t) (x >> 24);
 }
 
+
 /* Read a 32-bit integer from src in little-endian form. */
 static inline uint32_t le32dec(const uint8_t src[4]) {
     return ((uint32_t) src[0])
@@ -48,6 +50,7 @@ static inline uint32_t le32dec(const uint8_t src[4]) {
          | ((uint32_t) src[2]) << 16
          | ((uint32_t) src[3]) << 24;
 }
+
 
 /* Write a 64-bit integer to dst in big-endian form. */
 static inline void be64enc(uint8_t dst[8], uint64_t x) {
@@ -61,6 +64,7 @@ static inline void be64enc(uint8_t dst[8], uint64_t x) {
     dst[7] = (uint8_t) x;
 }
 
+
 /* Read a 64-bit integer from src in big-endian form. */
 static inline uint64_t be64dec(const uint8_t src[8]) {
     return ((uint64_t) src[0]) << 56
@@ -72,5 +76,6 @@ static inline uint64_t be64dec(const uint8_t src[8]) {
          | ((uint64_t) src[6]) << 8
          | ((uint64_t) src[7]);
 }
+
 
 #endif

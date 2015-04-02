@@ -35,6 +35,7 @@
 #include <stdint.h>
 #include <string.h>
 
+
 /* Implementation of the SHA-512 hash algorithm as defined in FIPS 180-2.
  *
  * The context object is initialized with `nectar_sha512_init`, and fed data
@@ -50,6 +51,7 @@ struct nectar_sha512_ctx {
 void nectar_sha512_init(struct nectar_sha512_ctx * cx);
 void nectar_sha512_update(struct nectar_sha512_ctx * cx, const uint8_t * data, size_t len);
 void nectar_sha512_final(struct nectar_sha512_ctx * cx, uint8_t * digest, size_t len);
+
 
 /* Implementation of the ChaCha20 stream cipher as defined in "ChaCha, a variant
  * of Salsa20" (Bernstein; 2008).
@@ -74,6 +76,7 @@ void nectar_chacha20_seek(struct nectar_chacha20_ctx * cx, uint64_t offset);
 uint64_t nectar_chacha20_tell(struct nectar_chacha20_ctx * cx);
 void nectar_chacha20_xor(struct nectar_chacha20_ctx * cx, uint8_t * dst, const uint8_t * src, size_t len);
 
+
 /* Implementation of the Poly1305-AES Message Authentication Code (MAC)
  * algorithm.
  *
@@ -93,6 +96,7 @@ void nectar_poly1305_init(struct nectar_poly1305_ctx * cx, const uint8_t key[32]
 void nectar_poly1305_update(struct nectar_poly1305_ctx * cx, uint8_t * data, size_t len);
 void nectar_poly1305_final(struct nectar_poly1305_ctx * cx, uint8_t mac[16]);
 
+
 /* Implementation of the Curve25519 elliptic curve Diffie-Hellman key agreement
  * scheme as defined in "Curve25519: new Diffie-Hellman speed records"
  * (Bernstein; 2006).
@@ -105,6 +109,7 @@ void nectar_poly1305_final(struct nectar_poly1305_ctx * cx, uint8_t mac[16]);
 void nectar_curve25519_clamp(uint8_t priv[32]);
 void nectar_curve25519_scalarmult_base(uint8_t pub[32], const uint8_t priv[32]);
 void nectar_curve25519_scalarmult(uint8_t shared[32], const uint8_t priv[32], const uint8_t other_pub[32]);
+
 
 /* Implementation of the Ed25519 digital signature scheme as defined in
  * "High-speed high-security signatures" (Bernstein, Duif, Lange, Schwabe,
@@ -119,6 +124,7 @@ void nectar_ed25519_pubkey(uint8_t pub[32], const uint8_t priv[32]);
 void nectar_ed25519_sign(uint8_t sign[64], const uint8_t * data, size_t len, const uint8_t pub[32], const uint8_t priv[32]);
 int nectar_ed25519_verify(const uint8_t sign[64], const uint8_t * data, size_t len, const uint8_t pub[32]);
 
+
 /* Implementation of the PBKDF2 key derivation function as defined in RFC 2898
  * and PKCS #5 v2.0, using SHA-512 rather than MD2, MD5 or SHA-1. */
 void nectar_pbkdf2_sha512(uint8_t * key, size_t key_len,
@@ -126,9 +132,11 @@ void nectar_pbkdf2_sha512(uint8_t * key, size_t key_len,
                           const uint8_t * pass, size_t pass_len,
                           unsigned int rounds);
 
+
 /* Utility function which compares two equally sized chunks of memory without
  * leaking any information via timing side channels. Returns 0 if and only if
  * the two chunks are identical. */
 int nectar_bcmp(const uint8_t * buf0, const uint8_t * buf1, size_t len);
+
 
 #endif

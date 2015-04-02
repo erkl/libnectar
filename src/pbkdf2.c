@@ -31,11 +31,13 @@
 #include "nectar.h"
 #include "endian.h"
 
+
 /* HMAC-SHA-512 context structure. */
 struct hmac_sha512_ctx {
     struct nectar_sha512_ctx inner;
     struct nectar_sha512_ctx outer;
 };
+
 
 /* Initialize a HMAC-SHA-512 context structure. */
 static void hmac_sha512_init(struct hmac_sha512_ctx * cx,
@@ -73,11 +75,13 @@ static void hmac_sha512_init(struct hmac_sha512_ctx * cx,
     nectar_sha512_update(&cx->outer, pad, 128);
 }
 
+
 /* Feed input data into a context. */
 static inline void hmac_sha512_update(struct hmac_sha512_ctx * cx,
                                       const uint8_t * data, size_t len) {
     nectar_sha512_update(&cx->inner, data, len);
 }
+
 
 /* Output the final HMAC digest. */
 static void hmac_sha512_final(struct hmac_sha512_ctx * cx,
@@ -89,10 +93,12 @@ static void hmac_sha512_final(struct hmac_sha512_ctx * cx,
     nectar_sha512_final(&cx->outer, digest, len);
 }
 
+
 /* Duplicate a HMAC context. */
 static void hmac_sha512_copy(struct hmac_sha512_ctx * dst, struct hmac_sha512_ctx * src) {
     memcpy(dst, src, sizeof(*dst));
 }
+
 
 /* Derive a stronger password. */
 void nectar_pbkdf2_sha512(uint8_t * key, size_t key_len,

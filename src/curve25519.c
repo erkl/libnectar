@@ -31,11 +31,13 @@
 #include "nectar.h"
 #include "25519/fe.h"
 
+
 /* Basepoint. */
 static const uint8_t basepoint[32] = {
     9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 };
+
 
 /* Massage a 32-byte seed into a valid Curve25519 secret. */
 void nectar_curve25519_clamp(uint8_t priv[32]) {
@@ -44,10 +46,12 @@ void nectar_curve25519_clamp(uint8_t priv[32]) {
     priv[31] |= 64;
 }
 
+
 /* Multiply n with the basepoint and store the result in q. */
 void nectar_curve25519_scalarmult_base(uint8_t q[32], const uint8_t n[32]) {
     nectar_curve25519_scalarmult(q, n, basepoint);
 }
+
 
 /* Multiply p and n, storing the result in q. */
 void nectar_curve25519_scalarmult(uint8_t q[32], const uint8_t n[32], const uint8_t p[32]) {

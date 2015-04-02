@@ -31,6 +31,7 @@
 #include "nectar.h"
 #include "endian.h"
 
+
 /* Round constants. */
 static const uint64_t K[80] = {
     0x428a2f98d728ae22ULL, 0x7137449123ef65cdULL, 0xb5c0fbcfec4d3b2fULL, 0xe9b5dba58189dbbcULL,
@@ -55,6 +56,7 @@ static const uint64_t K[80] = {
     0x4cc5d4becb3e42b6ULL, 0x597f299cfc657e2aULL, 0x5fcb6fab3ad6faecULL, 0x6c44198c4a475817ULL
 };
 
+
 /* Padding material. */
 static const uint8_t P[128] = {
     0x80, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -66,6 +68,7 @@ static const uint8_t P[128] = {
        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 };
+
 
 /* Core operations used by the `sha512_transform` function. */
 #define ch(x,y,z)  ((x & (y^z)) ^ z)
@@ -83,6 +86,7 @@ static const uint8_t P[128] = {
     t1 = sum0(a) + maj(a,b,c);                                                 \
     d += t0;                                                                   \
     h = t0 + t1;
+
 
 /* Apply the core SHA-512 transformation. */
 static void sha512_transform(uint64_t state[8], const uint8_t block[128]) {
@@ -130,6 +134,7 @@ static void sha512_transform(uint64_t state[8], const uint8_t block[128]) {
     state[7] += H;
 }
 
+
 /* Initialize the SHA-512 context. */
 void nectar_sha512_init(struct nectar_sha512_ctx * cx) {
     /* Initialization constants. */
@@ -145,6 +150,7 @@ void nectar_sha512_init(struct nectar_sha512_ctx * cx) {
     cx->count[0] = 0;
     cx->count[1] = 0;
 }
+
 
 /* Write data to the SHA-512 context. */
 void nectar_sha512_update(struct nectar_sha512_ctx * cx, const uint8_t * data, size_t len) {
@@ -190,6 +196,7 @@ void nectar_sha512_update(struct nectar_sha512_ctx * cx, const uint8_t * data, s
     /* Buffer any leftovers. */
     memcpy(cx->buf, data, len);
 }
+
 
 /* Write the SHA-512 digest to the output buffer. */
 void nectar_sha512_final(struct nectar_sha512_ctx * cx, uint8_t * digest, size_t len) {
