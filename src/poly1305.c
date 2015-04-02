@@ -105,7 +105,7 @@ static size_t poly1305_blocks(struct poly1305_ctx * cx,
 }
 
 /* Initialize the context structure. */
-void poly1305_init(struct poly1305_ctx * cx, const uint8_t key[32]) {
+void nectar_poly1305_init(struct nectar_poly1305_ctx * cx, const uint8_t key[32]) {
     /* Initialize r and h. */
     cx->r[0] = (le32dec(&key[ 0])     ) & 0x3ffffff;
     cx->r[1] = (le32dec(&key[ 3]) >> 2) & 0x3ffff03;
@@ -130,7 +130,7 @@ void poly1305_init(struct poly1305_ctx * cx, const uint8_t key[32]) {
 }
 
 /* Feed the context more data. */
-void poly1305_update(struct poly1305_ctx * cx, uint8_t * data, size_t len) {
+void nectar_poly1305_update(struct nectar_poly1305_ctx * cx, uint8_t * data, size_t len) {
     size_t n;
 
     /* Ignore empty input. */
@@ -173,7 +173,7 @@ void poly1305_update(struct poly1305_ctx * cx, uint8_t * data, size_t len) {
 }
 
 /* Generate the final message authentication code. */
-void poly1305_final(struct poly1305_ctx * cx, uint8_t mac[16]) {
+void nectar_poly1305_final(struct nectar_poly1305_ctx * cx, uint8_t mac[16]) {
     uint32_t h0, h1, h2, h3, h4, c;
     uint32_t g0, g1, g2, g3, g4;
     uint64_t f;

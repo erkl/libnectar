@@ -131,7 +131,7 @@ static void sha512_transform(uint64_t state[8], const uint8_t block[128]) {
 }
 
 /* Initialize the SHA-512 context. */
-void sha512_init(struct sha512_ctx * cx) {
+void nectar_sha512_init(struct nectar_sha512_ctx * cx) {
     /* Initialization constants. */
     cx->state[0] = 0x6a09e667f3bcc908ULL;
     cx->state[1] = 0xbb67ae8584caa73bULL;
@@ -147,7 +147,7 @@ void sha512_init(struct sha512_ctx * cx) {
 }
 
 /* Write data to the SHA-512 context. */
-void sha512_update(struct sha512_ctx * cx, const uint8_t * data, size_t len) {
+void nectar_sha512_update(struct nectar_sha512_ctx * cx, const uint8_t * data, size_t len) {
     uint64_t t0, t1;
     uint64_t rem;
 
@@ -192,7 +192,7 @@ void sha512_update(struct sha512_ctx * cx, const uint8_t * data, size_t len) {
 }
 
 /* Write the SHA-512 digest to the output buffer. */
-void sha512_final(struct sha512_ctx * cx, uint8_t * digest, size_t len) {
+void nectar_sha512_final(struct nectar_sha512_ctx * cx, uint8_t * digest, size_t len) {
     uint8_t tmp[16];
     size_t rem, pad;
     size_t i, cutoff;
@@ -209,8 +209,8 @@ void sha512_final(struct sha512_ctx * cx, uint8_t * digest, size_t len) {
     rem = (size_t) (cx->count[1] % 128);
     pad = (rem < 112 ? 112 - rem : 240 - rem);
 
-    sha512_update(cx, P, pad);
-    sha512_update(cx, tmp, 16);
+    nectar_sha512_update(cx, P, pad);
+    nectar_sha512_update(cx, tmp, 16);
 
     /* Copy the hash state into the digest buffer. The mask operation rounds
      * len down to the nearest multiple of 8. */

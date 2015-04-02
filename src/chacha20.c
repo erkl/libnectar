@@ -75,8 +75,8 @@ static void chacha20_generate(uint8_t dst[64], const uint32_t state[16]) {
 }
 
 /* Initialize the context structure. */
-void chacha20_init(struct chacha20_ctx * cx, const uint8_t key[32],
-                   const uint8_t iv[8]) {
+void nectar_chacha20_init(struct nectar_chacha20_ctx * cx, const uint8_t key[32],
+                          const uint8_t iv[8]) {
     /* Load constant specific to 256-bit keys. */
     cx->state[ 0] = 0x61707865;  /* "expa" */
     cx->state[ 1] = 0x3320646e;  /* "nd 3" */
@@ -102,19 +102,19 @@ void chacha20_init(struct chacha20_ctx * cx, const uint8_t key[32],
 }
 
 /* Seek to an absolute keystream offset. */
-void chacha20_seek(struct chacha20_ctx * cx, uint64_t offset) {
+void nectar_chacha20_seek(struct nectar_chacha20_ctx * cx, uint64_t offset) {
     cx->offset = offset;
 }
 
 /* Get the current keystream offset. */
-uint64_t chacha20_tell(struct chacha20_ctx * cx) {
+uint64_t nectar_chacha20_tell(struct nectar_chacha20_ctx * cx) {
     return cx->offset;
 }
 
 /* XOR `len` bytes from the keystream with `src` into `dst`. The `src` and
  * `dst` slices may only overlap if `dst <= src`. */
-void chacha20_xor(struct chacha20_ctx * cx, uint8_t * dst,
-                  const uint8_t * src, size_t len) {
+void nectar_chacha20_xor(struct nectar_chacha20_ctx * cx, uint8_t * dst,
+                         const uint8_t * src, size_t len) {
     uint8_t tmp[64];
     size_t off, num;
     int i;

@@ -329,7 +329,7 @@ int fe_isnonzero(const fe f)
 {
   uint8_t s[32];
   fe_tobytes(s,f);
-  return safe_bcmp(s, zero, 32);
+  return nectar_bcmp(s, zero, 32);
 }
 
 void fe_mul(fe h,const fe f,const fe g)

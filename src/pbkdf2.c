@@ -33,8 +33,8 @@
 
 /* HMAC-SHA-512 context structure. */
 struct hmac_sha512_ctx {
-    struct sha512_ctx inner;
-    struct sha512_ctx outer;
+    struct nectar_sha512_ctx inner;
+    struct nectar_sha512_ctx outer;
 };
 
 /* Initialize a HMAC-SHA-512 context structure. */
@@ -46,9 +46,9 @@ static void hmac_sha512_init(struct hmac_sha512_ctx * cx,
 
     /* Shrink long keys. */
     if (len > 128) {
-        sha512_init(&cx->inner);
-        sha512_update(&cx->inner, key, len);
-        sha512_final(&cx->inner, khash, 64);
+        nectar_sha512_init(&cx->inner);
+        nectar_sha512_update(&cx->inner, key, len);
+        nectar_sha512_final(&cx->inner, khash, 64);
 
         key = khash;
         len = 64;
@@ -60,8 +60,8 @@ static void hmac_sha512_init(struct hmac_sha512_ctx * cx,
     for (i = len; i < 128; i++)
         pad[i] = 0x36;
 
-    sha512_init(&cx->inner);
-    sha512_update(&cx->inner, pad, 128);
+    nectar_sha512_init(&cx->inner);
+    nectar_sha512_update(&cx->inner, pad, 128);
 
     /* Initialize the outer hash context. */
     for (i = 0; i < len; i++)
@@ -69,14 +69,14 @@ static void hmac_sha512_init(struct hmac_sha512_ctx * cx,
     for (i = len; i < 128; i++)
         pad[i] = 0x5c;
 
-    sha512_init(&cx->outer);
-    sha512_update(&cx->outer, pad, 128);
+    nectar_sha512_init(&cx->outer);
+    nectar_sha512_update(&cx->outer, pad, 128);
 }
 
 /* Feed input data into a context. */
 static inline void hmac_sha512_update(struct hmac_sha512_ctx * cx,
                                       const uint8_t * data, size_t len) {
-    sha512_update(&cx->inner, data, len);
+    nectar_sha512_update(&cx->inner, data, len);
 }
 
 /* Output the final HMAC digest. */
@@ -84,9 +84,9 @@ static void hmac_sha512_final(struct hmac_sha512_ctx * cx,
                               uint8_t * digest, size_t len) {
     uint8_t inner[64];
 
-    sha512_final(&cx->inner, inner, 64);
-    sha512_update(&cx->outer, inner, 64);
-    sha512_final(&cx->outer, digest, len);
+    nectar_sha512_final(&cx->inner, inner, 64);
+    nectar_sha512_update(&cx->outer, inner, 64);
+    nectar_sha512_final(&cx->outer, digest, len);
 }
 
 /* Duplicate a HMAC context. */
@@ -95,10 +95,10 @@ static void hmac_sha512_copy(struct hmac_sha512_ctx * dst, struct hmac_sha512_ct
 }
 
 /* Derive a stronger password. */
-void pbkdf2_sha512(uint8_t * key, size_t key_len,
-                   const uint8_t * salt, size_t salt_len,
-                   const uint8_t * pass, size_t pass_len,
-                   unsigned int rounds) {
+void nectar_pbkdf2_sha512(uint8_t * key, size_t key_len,
+                          const uint8_t * salt, size_t salt_len,
+                          const uint8_t * pass, size_t pass_len,
+                          unsigned int rounds) {
     struct hmac_sha512_ctx h0, h1;
     uint8_t tmp[64];
     unsigned int i, j;

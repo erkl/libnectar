@@ -38,19 +38,19 @@ static const uint8_t basepoint[32] = {
 };
 
 /* Massage a 32-byte seed into a valid Curve25519 secret. */
-void curve25519_clamp(uint8_t priv[32]) {
+void nectar_curve25519_clamp(uint8_t priv[32]) {
     priv[ 0] &= 248;
     priv[31] &= 127;
     priv[31] |= 64;
 }
 
 /* Multiply n with the basepoint and store the result in q. */
-void curve25519_scalarmult_base(uint8_t q[32], const uint8_t n[32]) {
-    curve25519_scalarmult(q, n, basepoint);
+void nectar_curve25519_scalarmult_base(uint8_t q[32], const uint8_t n[32]) {
+    nectar_curve25519_scalarmult(q, n, basepoint);
 }
 
 /* Multiply p and n, storing the result in q. */
-void curve25519_scalarmult(uint8_t q[32], const uint8_t n[32], const uint8_t p[32]) {
+void nectar_curve25519_scalarmult(uint8_t q[32], const uint8_t n[32], const uint8_t p[32]) {
     uint8_t e[32];
     unsigned int b, s = 0;
     fe x1, x2, z2, x3, z3;
