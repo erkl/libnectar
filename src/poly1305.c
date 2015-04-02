@@ -71,7 +71,7 @@ static size_t blocks(struct nectar_poly1305_ctx * cx,
 
     /* Process the input in chunks of 16 bytes. */
     do {
-        h0 += (le32dec(data +  0))      & 0x3ffffff;
+        h0 += (le32dec(data +  0)     ) & 0x3ffffff;
         h1 += (le32dec(data +  3) >> 2) & 0x3ffffff;
         h2 += (le32dec(data +  6) >> 4) & 0x3ffffff;
         h3 += (le32dec(data +  9) >> 6) & 0x3ffffff;
@@ -208,7 +208,7 @@ void nectar_poly1305_final(struct nectar_poly1305_ctx * cx, uint8_t mac[16]) {
     g3 = h3 + c;  c = g3 >> 26;  g3 &= 0x3ffffff;
     g4 = h4 + c - (1 << 26);
 
-    mask = (g4 >> (32-1)) - 1;
+    mask = (g4 >> 31) - 1;
     g0 &= mask;
     g1 &= mask;
     g2 &= mask;
