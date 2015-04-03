@@ -1,33 +1,33 @@
 CC      = clang
-CFLAGS  = -I./include -O2 -std=c99 -pedantic -Wall -Werror
 AR      = ar
+CFLAGS  = -O2 -Wall -Werror -std=c99 -pedantic -I./include
 
-TARGET  = build/libnectar.a
-OBJECTS = build/25519/fe.o                                                     \
-          build/25519/ge.o                                                     \
-          build/25519/sc.o                                                     \
-          build/bcmp.o                                                         \
-          build/chacha20.o                                                     \
-          build/curve25519.o                                                   \
-          build/ed25519.o                                                      \
-          build/pbkdf2.o                                                       \
-          build/poly1305.o                                                     \
-          build/sha512.o
+SOURCES = $(shell find src -type f -name "*.c")
+OBJECTS = $(SOURCES:src/%.c=build/%.o)
 
--include $(OBJECTS:%.o=%.d)
 
-$(TARGET): $(OBJECTS)
+# Default make target.
+build: build/libnectar.a
+
+# Assemble the static library.
+build/libnectar.a: $(OBJECTS)
 	@printf "   AR  $@\n"
 	@$(AR) cr $@ $(OBJECTS)
 
+# Build individual translation units.
 build/%.o: src/%.c
 	@printf "   CC  $@\n"
 	@mkdir -p $(shell dirname $@)
-	@$(CC) -MM $(CFLAGS) $< | sed -e 's/^\(.*\):/build\/\1:/' > $(@:.o=.d)
+	@$(CC) -MM $(CFLAGS) $< | sed -e 's|^\(.*\):|build/\1:|' > $(@:.o=.d)
 	@$(CC) $(CFLAGS) -c -o $@ $<
 
+-include $(OBJECTS:%.o=%.d)
+
+
+# Empty the build/ directory.
 clean:
 	@printf "   rm  build/*\n"
 	@rm -rf build/*
 
-.PHONY: clean
+
+.PHONY: build clean
