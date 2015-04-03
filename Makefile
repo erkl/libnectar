@@ -30,4 +30,19 @@ clean:
 	@rm -rf build/*
 
 
-.PHONY: build clean
+# Install header and library.
+install: build/libnectar.a
+	@printf "   cp  /usr/local/include/nectar.h\n"
+	@cp include/nectar.h "/usr/local/include/nectar.h"
+	@printf "   cp  /usr/local/lib/libnectar.a\n"
+	@cp build/libnectar.a "/usr/local/lib/libnectar.a"
+
+# Uninstall header and library.
+uninstall:
+	@printf "   rm  /usr/local/include/nectar.h\n"
+	@rm -f /usr/local/include/nectar.h
+	@printf "   rm  /usr/local/lib/libnectar.a\n"
+	@rm -f /usr/local/lib/libnectar.a
+
+
+.PHONY: build clean install uninstall
