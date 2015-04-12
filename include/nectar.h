@@ -133,6 +133,11 @@ void nectar_pbkdf2_sha512(uint8_t * key, size_t key_len,
                           unsigned int rounds);
 
 
+/* Implementation of the SipHash-2-4 hash function as defined in "SipHash: a
+ * fast short-input PRF" (Aumasson, Bernstein; 2012). */
+uint64_t nectar_siphash(const uint8_t seed[16], const uint8_t * data, size_t len);
+
+
 /* Utility function which compares two equally sized chunks of memory without
  * leaking any information via timing side channels. Returns 0 if and only if
  * the two chunks are identical. */

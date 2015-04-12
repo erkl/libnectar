@@ -52,6 +52,19 @@ static inline uint32_t le32dec(const uint8_t src[4]) {
 }
 
 
+/* Read a 64-bit integer from src in little-endian form. */
+static inline uint64_t le64dec(const uint8_t src[8]) {
+    return ((uint64_t) src[0])
+         | ((uint64_t) src[1]) << 8
+         | ((uint64_t) src[2]) << 16
+         | ((uint64_t) src[3]) << 24
+         | ((uint64_t) src[4]) << 32
+         | ((uint64_t) src[5]) << 40
+         | ((uint64_t) src[6]) << 48
+         | ((uint64_t) src[7]) << 56;
+}
+
+
 /* Write a 64-bit integer to dst in big-endian form. */
 static inline void be64enc(uint8_t dst[8], uint64_t x) {
     dst[0] = (uint8_t) (x >> 56);
