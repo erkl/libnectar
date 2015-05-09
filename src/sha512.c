@@ -70,7 +70,7 @@ static const uint8_t P[128] = {
 };
 
 
-/* Core operations used by the `transform` function. */
+/* Support macros. */
 #define ch(x,y,z)  ((x & (y^z)) ^ z)
 #define maj(x,y,z) ((x & (y|z)) | (y&z))
 
@@ -86,6 +86,18 @@ static const uint8_t P[128] = {
     t1 = sum0(a) + maj(a,b,c);                                                 \
     d += t0;                                                                   \
     h = t0 + t1;
+
+#define out(dst, state)                                                        \
+    do {                                                                       \
+        be64enc(&((dst)[ 0]), (state)[0]);                                     \
+        be64enc(&((dst)[ 8]), (state)[1]);                                     \
+        be64enc(&((dst)[16]), (state)[2]);                                     \
+        be64enc(&((dst)[24]), (state)[3]);                                     \
+        be64enc(&((dst)[32]), (state)[4]);                                     \
+        be64enc(&((dst)[40]), (state)[5]);                                     \
+        be64enc(&((dst)[48]), (state)[6]);                                     \
+        be64enc(&((dst)[56]), (state)[7]);                                     \
+    } while (0)
 
 
 /* Apply the core SHA-512 transformation. */
@@ -200,13 +212,8 @@ void nectar_sha512_update(struct nectar_sha512_ctx * cx, const uint8_t * data, s
 
 /* Write the SHA-512 digest to the output buffer. */
 void nectar_sha512_final(struct nectar_sha512_ctx * cx, uint8_t * digest, size_t len) {
-    uint8_t tmp[16];
+    uint8_t tmp[64];
     size_t rem, pad;
-    size_t i, cutoff;
-
-    /* Clamp the digest length. */
-    if (len > 64)
-        len = 64;
 
     /* Encode the bit count. */
     be64enc(&tmp[0], (cx->count[0] << 3) | (cx->count[1] >> 61));
@@ -219,12 +226,11 @@ void nectar_sha512_final(struct nectar_sha512_ctx * cx, uint8_t * digest, size_t
     nectar_sha512_update(cx, P, pad);
     nectar_sha512_update(cx, tmp, 16);
 
-    /* Copy the hash state into the digest buffer. The mask operation rounds
-     * len down to the nearest multiple of 8. */
-    cutoff = len & ~((size_t) (7));
-
-    for (i = 0; i < cutoff; i += 8)
-        be64enc(&digest[i], cx->state[i/8]);
-    for (; i < len; i++)
-        digest[i] = (uint8_t) (cx->state[i/8] >> (56 - 8*(i%8)));
+    /* Use a temporary buffer if there isn't room for the full digest. */
+    if (len >= 64) {
+        out(digest, cx->state);
+    } else {
+        out(tmp, cx->state);
+        memcpy(digest, tmp, len);
+    }
 }
