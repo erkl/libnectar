@@ -28,9 +28,9 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
-#include "nectar.h"
-#include "25519/ge.h"
-#include "25519/sc.h"
+#include "include/nectar.h"
+#include "src/25519/ge.h"
+#include "src/25519/sc.h"
 
 
 /* Generate a public key from a secret key. */

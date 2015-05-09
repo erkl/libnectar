@@ -1,7 +1,7 @@
 #ifndef LIBNECTAR_25519_SC_H
 #define LIBNECTAR_25519_SC_H
 
-#include "nectar.h"
+#include "include/nectar.h"
 
 /* Namespacing. */
 #define  sc_muladd  nectar__25519_sc_muladd

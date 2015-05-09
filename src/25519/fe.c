@@ -1,4 +1,4 @@
-#include "fe.h"
+#include "src/25519/fe.h"
 
 void fe_0(fe h)
 {

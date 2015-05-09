@@ -1,7 +1,7 @@
 #ifndef LIBNECTAR_25519_FE_H
 #define LIBNECTAR_25519_FE_H
 
-#include "nectar.h"
+#include "include/nectar.h"
 
 /* Namespacing. */
 #define  fe             nectar__25519_fe_t

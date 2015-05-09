@@ -1,6 +1,6 @@
 CC      = clang
 AR      = ar
-CFLAGS  = -O2 -Wall -Werror -std=c99 -pedantic -I./include
+CFLAGS  = -O2 -Wall -Werror -std=c99 -pedantic -I.
 
 
 # Default make target.

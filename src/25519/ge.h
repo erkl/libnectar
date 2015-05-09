@@ -1,8 +1,8 @@
 #ifndef LIBNECTAR_25519_GE_H
 #define LIBNECTAR_25519_GE_H
 
-#include "nectar.h"
-#include "fe.h"
+#include "include/nectar.h"
+#include "src/25519/fe.h"
 
 /* Namespacing. */
 #define  ge_p2                         nectar__25519_ge_p2_t
