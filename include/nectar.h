@@ -94,7 +94,7 @@ struct nectar_poly1305_ctx {
 
 void nectar_poly1305_init(struct nectar_poly1305_ctx * cx, const uint8_t key[32]);
 void nectar_poly1305_update(struct nectar_poly1305_ctx * cx, uint8_t * data, size_t len);
-void nectar_poly1305_final(struct nectar_poly1305_ctx * cx, uint8_t mac[16]);
+void nectar_poly1305_final(struct nectar_poly1305_ctx * cx, uint8_t * mac, size_t len);
 
 
 /* Implementation of the Curve25519 elliptic curve Diffie-Hellman key agreement

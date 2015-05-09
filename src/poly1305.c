@@ -39,6 +39,16 @@ static const uint8_t P[16] = {
 };
 
 
+/* Support macros. */
+#define out(dst, h0, h1, h2, h3)                                               \
+    do {                                                                       \
+        le32enc(&((dst)[ 0]), h0);                                             \
+        le32enc(&((dst)[ 4]), h1);                                             \
+        le32enc(&((dst)[ 8]), h2);                                             \
+        le32enc(&((dst)[12]), h3);                                             \
+    } while (0)
+
+
 /* Inner block processing algorithm. */
 static size_t blocks(struct nectar_poly1305_ctx * cx,
                      uint8_t * data, size_t len, int final) {
@@ -177,11 +187,12 @@ void nectar_poly1305_update(struct nectar_poly1305_ctx * cx, uint8_t * data, siz
 
 
 /* Generate the final message authentication code. */
-void nectar_poly1305_final(struct nectar_poly1305_ctx * cx, uint8_t mac[16]) {
+void nectar_poly1305_final(struct nectar_poly1305_ctx * cx, uint8_t * mac, size_t len) {
     uint32_t h0, h1, h2, h3, h4, c;
     uint32_t g0, g1, g2, g3, g4;
     uint64_t f;
     uint32_t mask;
+    uint8_t tmp[16];
 
     /* If there is still some data left in the buffer, fill the remaining
      * space with padding and process one last block. */
@@ -232,9 +243,11 @@ void nectar_poly1305_final(struct nectar_poly1305_ctx * cx, uint8_t mac[16]) {
     f = (uint64_t) h2 + cx->pad[2] + (f >> 32);  h2 = (uint32_t) f;
     f = (uint64_t) h3 + cx->pad[3] + (f >> 32);  h3 = (uint32_t) f;
 
-    /* Write the now calculated MAC. */
-    le32enc(&mac[ 0], h0);
-    le32enc(&mac[ 4], h1);
-    le32enc(&mac[ 8], h2);
-    le32enc(&mac[12], h3);
+    /* Use a temporary buffer if there isn't room for the full MAC. */
+    if (len >= 16) {
+        out(mac, h0, h1, h2, h3);
+    } else {
+        out(tmp, h0, h1, h2, h3);
+        memcpy(mac, tmp, len);
+    }
 }
