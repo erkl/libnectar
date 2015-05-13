@@ -37,6 +37,22 @@ void nectar_sha512_update(struct nectar_sha512_ctx * cx, const uint8_t * data, s
 void nectar_sha512_final(struct nectar_sha512_ctx * cx, uint8_t * digest, size_t len);
 
 
+/* Implementation of the HMAC algorithm as defined in FIPS 198-1, using SHA-512
+ * as the core hash function.
+ *
+ * The context object is initialized with a key using `nectar_hmac_sha512_init`,
+ * and fed data through `nectar_hmac_sha512_update`. `nectar_hmac_sha512_final`
+ * finalizes and outputs the MAC. */
+struct nectar_hmac_sha512_ctx {
+    struct nectar_sha512_ctx inner;
+    struct nectar_sha512_ctx outer;
+};
+
+void nectar_hmac_sha512_init(struct nectar_hmac_sha512_ctx * cx, const uint8_t * key, size_t len);
+void nectar_hmac_sha512_update(struct nectar_hmac_sha512_ctx * cx, const uint8_t * data, size_t len);
+void nectar_hmac_sha512_final(struct nectar_hmac_sha512_ctx * cx, uint8_t * digest, size_t len);
+
+
 /* Implementation of the ChaCha20 stream cipher as defined in "ChaCha, a variant
  * of Salsa20" (Bernstein; 2008).
  *
