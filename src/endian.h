@@ -20,7 +20,7 @@
 
 /* Write a 32-bit integer to dst in little-endian form. */
 static inline void le32enc(uint8_t dst[4], uint32_t x) {
-    dst[0] = (uint8_t) x;
+    dst[0] = (uint8_t) (x);
     dst[1] = (uint8_t) (x >> 8);
     dst[2] = (uint8_t) (x >> 16);
     dst[3] = (uint8_t) (x >> 24);
@@ -58,7 +58,7 @@ static inline void be64enc(uint8_t dst[8], uint64_t x) {
     dst[4] = (uint8_t) (x >> 24);
     dst[5] = (uint8_t) (x >> 16);
     dst[6] = (uint8_t) (x >> 8);
-    dst[7] = (uint8_t) x;
+    dst[7] = (uint8_t) (x);
 }
 
 

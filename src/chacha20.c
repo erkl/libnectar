@@ -106,8 +106,7 @@ uint64_t nectar_chacha20_tell(struct nectar_chacha20_ctx * cx) {
 void nectar_chacha20_xor(struct nectar_chacha20_ctx * cx, uint8_t * dst,
                          const uint8_t * src, size_t len) {
     uint8_t tmp[64];
-    size_t off, num;
-    int i;
+    size_t off, num, i;
 
     /* Generate the keystream in 64-byte pieces. */
     while (len > 0) {
