@@ -62,8 +62,8 @@ static void generate(uint8_t dst[64], const uint32_t state[16]) {
 
 
 /* Initialize the context structure. */
-void nectar_chacha20_init(struct nectar_chacha20_ctx * cx, const uint8_t key[32],
-                          const uint8_t iv[8]) {
+void nectar_chacha20_init(struct nectar_chacha20_ctx * cx,
+                          const uint8_t key[32], uint64_t iv) {
     /* Load constant specific to 256-bit keys. */
     cx->state[ 0] = 0x61707865;  /* "expa" */
     cx->state[ 1] = 0x3320646e;  /* "nd 3" */
@@ -81,8 +81,8 @@ void nectar_chacha20_init(struct nectar_chacha20_ctx * cx, const uint8_t key[32]
     cx->state[11] = le32dec(&key[28]);
 
     /* Initialize IV. */
-    cx->state[14] = le32dec(&iv[0]);
-    cx->state[15] = le32dec(&iv[4]);
+    cx->state[14] = (uint32_t) (iv);
+    cx->state[15] = (uint32_t) (iv >> 32);
 
     /* Initialize the stream position. */
     cx->offset = 0;
