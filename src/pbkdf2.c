@@ -20,10 +20,10 @@
 void nectar_pbkdf2_sha512(uint8_t * key, size_t key_len,
                           const uint8_t * salt, size_t salt_len,
                           const uint8_t * pass, size_t pass_len,
-                          unsigned int rounds) {
+                          unsigned long rounds) {
     struct nectar_hmac_sha512_ctx h0, h1;
     uint8_t tmp[64];
-    unsigned int i, j;
+    unsigned long i, j;
     uint32_t count;
     size_t num;
 

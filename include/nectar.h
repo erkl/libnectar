@@ -130,7 +130,7 @@ int nectar_ed25519_verify(const uint8_t sign[64], const uint8_t * data, size_t l
 void nectar_pbkdf2_sha512(uint8_t * key, size_t key_len,
                           const uint8_t * salt, size_t salt_len,
                           const uint8_t * pass, size_t pass_len,
-                          unsigned int rounds);
+                          unsigned long rounds);
 
 
 /* Implementation of the SipHash-2-4 hash function as defined in "SipHash: a
