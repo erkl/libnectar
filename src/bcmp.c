@@ -25,5 +25,6 @@ int nectar_bcmp(const uint8_t * buf0, const uint8_t * buf1, size_t len) {
     for (i = 0; i < len; i++)
         r |= (buf0[i] ^ buf1[i]);
 
-    return (int) r;
+    /* Fancy bit twiddling to return either 0 or -1. */
+    return (int) ((((r - 1) >> 8) & 1) - 1);
 }
