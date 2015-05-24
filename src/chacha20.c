@@ -91,7 +91,8 @@ void nectar_chacha20_init(struct nectar_chacha20_ctx * cx,
     cx->state[14] = (uint32_t) (iv);
     cx->state[15] = (uint32_t) (iv >> 32);
 
-    /* Initialize the stream position. */
+    /* Initialize the stream position. This field is used to initialize
+     * `cx->state[12]` and `cx->state[13]` in `nectar_chacha20_xor`. */
     cx->offset = 0;
 }
 
