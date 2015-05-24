@@ -77,6 +77,12 @@ uint64_t nectar_chacha20_tell(struct nectar_chacha20_ctx * cx);
 void nectar_chacha20_xor(struct nectar_chacha20_ctx * cx, uint8_t * dst, const uint8_t * src, size_t len);
 
 
+/* Implementation of the HChaCha20 "hash function". It is analogous to HSalsa20,
+ * which is described in "Extending the Salsa20 nonce" (Bernstein; 2008), but
+ * adapted for ChaCha20. */
+void nectar_hchacha20(uint8_t dst[32], const uint8_t key[32], const uint8_t iv[16]);
+
+
 /* Implementation of the Poly1305-AES Message Authentication Code (MAC)
  * algorithm, a Wegman-Carter authenticator designed by D. J. Bernstein.
  *

@@ -29,6 +29,26 @@
     } while (0)
 
 
+/* Initialize the ChaCha20 context with a 256-bit key. */
+static void keysetup(struct nectar_chacha20_ctx * cx, const uint8_t key[32]) {
+    /* Store "sigma". */
+    cx->state[ 0] = 0x61707865;  /* "expa" */
+    cx->state[ 1] = 0x3320646e;  /* "nd 3" */
+    cx->state[ 2] = 0x79622d32;  /* "2-by" */
+    cx->state[ 3] = 0x6b206574;  /* "te k" */
+
+    /* Store the key. */
+    cx->state[ 4] = le32dec(&key[ 0]);
+    cx->state[ 5] = le32dec(&key[ 4]);
+    cx->state[ 6] = le32dec(&key[ 8]);
+    cx->state[ 7] = le32dec(&key[12]);
+    cx->state[ 8] = le32dec(&key[16]);
+    cx->state[ 9] = le32dec(&key[20]);
+    cx->state[10] = le32dec(&key[24]);
+    cx->state[11] = le32dec(&key[28]);
+}
+
+
 /* Inner keystream generation algorithm. */
 static void generate(uint8_t dst[64], const uint32_t state[16]) {
     uint32_t x[16];
@@ -64,21 +84,8 @@ static void generate(uint8_t dst[64], const uint32_t state[16]) {
 /* Initialize the context structure. */
 void nectar_chacha20_init(struct nectar_chacha20_ctx * cx,
                           const uint8_t key[32], uint64_t iv) {
-    /* Load constant specific to 256-bit keys. */
-    cx->state[ 0] = 0x61707865;  /* "expa" */
-    cx->state[ 1] = 0x3320646e;  /* "nd 3" */
-    cx->state[ 2] = 0x79622d32;  /* "2-by" */
-    cx->state[ 3] = 0x6b206574;  /* "te k" */
-
-    /* Load the key. */
-    cx->state[ 4] = le32dec(&key[ 0]);
-    cx->state[ 5] = le32dec(&key[ 4]);
-    cx->state[ 6] = le32dec(&key[ 8]);
-    cx->state[ 7] = le32dec(&key[12]);
-    cx->state[ 8] = le32dec(&key[16]);
-    cx->state[ 9] = le32dec(&key[20]);
-    cx->state[10] = le32dec(&key[24]);
-    cx->state[11] = le32dec(&key[28]);
+    /* Key setup. */
+    keysetup(cx, key);
 
     /* Initialize IV. */
     cx->state[14] = (uint32_t) (iv);
@@ -129,4 +136,44 @@ void nectar_chacha20_xor(struct nectar_chacha20_ctx * cx, uint8_t * dst,
         src += num;
         len -= num;
     }
+}
+
+
+/* Generate a 256-bit key from an original 256-bit key and a 128-bit IV. */
+void nectar_hchacha20(uint8_t dst[32], const uint8_t key[32], const uint8_t iv[16]) {
+    struct nectar_chacha20_ctx cx;
+    uint32_t t;
+    int i;
+
+    /* Key setup. */
+    keysetup(&cx, key);
+
+    /* IV setup. */
+    cx.state[12] = le32dec(&iv[ 0]);
+    cx.state[13] = le32dec(&iv[ 4]);
+    cx.state[14] = le32dec(&iv[ 8]);
+    cx.state[15] = le32dec(&iv[12]);
+
+    /* Perform all 20 rounds in batches of 8 quarter-rounds. */
+    for (i = 0; i < 20; i += 2) {
+        qtr(t, cx.state, 0, 4,  8, 12);
+        qtr(t, cx.state, 1, 5,  9, 13);
+        qtr(t, cx.state, 2, 6, 10, 14);
+        qtr(t, cx.state, 3, 7, 11, 15);
+
+        qtr(t, cx.state, 0, 5, 10, 15);
+        qtr(t, cx.state, 1, 6, 11, 12);
+        qtr(t, cx.state, 2, 7,  8, 13);
+        qtr(t, cx.state, 3, 4,  9, 14);
+    }
+
+    /* Use select parts of the state as output. */
+    le32enc(&dst[ 0], cx.state[ 0]);
+    le32enc(&dst[ 4], cx.state[ 1]);
+    le32enc(&dst[ 8], cx.state[ 2]);
+    le32enc(&dst[12], cx.state[ 3]);
+    le32enc(&dst[16], cx.state[12]);
+    le32enc(&dst[20], cx.state[13]);
+    le32enc(&dst[24], cx.state[14]);
+    le32enc(&dst[28], cx.state[15]);
 }
