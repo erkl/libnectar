@@ -83,13 +83,13 @@ static void generate(uint8_t dst[64], const uint32_t state[16]) {
 
 /* Initialize the context structure. */
 void nectar_chacha20_init(struct nectar_chacha20_ctx * cx,
-                          const uint8_t key[32], uint64_t iv) {
+                          const uint8_t key[32], const uint8_t iv[8]) {
     /* Key setup. */
     keysetup(cx, key);
 
     /* Initialize IV. */
-    cx->state[14] = (uint32_t) (iv);
-    cx->state[15] = (uint32_t) (iv >> 32);
+    cx->state[14] = le32dec(&iv[0]);
+    cx->state[15] = le32dec(&iv[4]);
 
     /* Initialize the stream position. This field is used to initialize
      * `cx->state[12]` and `cx->state[13]` in `nectar_chacha20_xor`. */

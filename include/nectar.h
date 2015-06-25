@@ -71,7 +71,7 @@ struct nectar_chacha20_ctx {
     uint64_t offset;
 };
 
-void nectar_chacha20_init(struct nectar_chacha20_ctx * cx, const uint8_t key[32], uint64_t iv);
+void nectar_chacha20_init(struct nectar_chacha20_ctx * cx, const uint8_t key[32], const uint8_t iv[8]);
 void nectar_chacha20_seek(struct nectar_chacha20_ctx * cx, uint64_t offset);
 uint64_t nectar_chacha20_tell(struct nectar_chacha20_ctx * cx);
 void nectar_chacha20_xor(struct nectar_chacha20_ctx * cx, uint8_t * dst, const uint8_t * src, size_t len);
