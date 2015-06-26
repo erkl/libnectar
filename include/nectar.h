@@ -83,15 +83,16 @@ void nectar_chacha20_xor(struct nectar_chacha20_ctx * cx, uint8_t * dst, const u
 void nectar_hchacha20(uint8_t dst[32], const uint8_t key[32], const uint8_t iv[16]);
 
 
-/* Implementation of the Poly1305-AES Message Authentication Code (MAC)
- * algorithm, a Wegman-Carter authenticator designed by D. J. Bernstein.
+/* Implementation of the Poly1305 Message Authentication Code (MAC) algorithm,
+ * a Wegman-Carter authenticator designed by D. J. Bernstein.
  *
  * The context object is initialized with `nectar_poly1305_init`, and fed data
  * with `nectar_poly1305_update`. Calling `nectar_poly1305_final` generates the
  * final message authentication code, at which point the context has to be
  * re-initialized before being used again.
  *
- * Keys must never be reused. */
+ * Keys must *never* be reused. Poly1305-AES uses a 32-byte shared secret and
+ * a 16-byte IV to generate the key for a particular authenticator. */
 struct nectar_poly1305_ctx {
     uint32_t r[5];
     uint32_t h[5];
