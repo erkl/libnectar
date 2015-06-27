@@ -35,7 +35,7 @@ static const uint8_t P[16] = {
 
 /* Inner block processing algorithm. */
 static size_t blocks(struct nectar_poly1305_ctx * cx,
-                     uint8_t * data, size_t len, int final) {
+                     const uint8_t * data, size_t len, int final) {
     uint32_t r0, r1, r2, r3, r4;
     uint32_t s1, s2, s3, s4;
     uint32_t h0, h1, h2, h3, h4;
@@ -128,7 +128,7 @@ void nectar_poly1305_init(struct nectar_poly1305_ctx * cx, const uint8_t key[32]
 
 
 /* Feed the context more data. */
-void nectar_poly1305_update(struct nectar_poly1305_ctx * cx, uint8_t * data, size_t len) {
+void nectar_poly1305_update(struct nectar_poly1305_ctx * cx, const uint8_t * data, size_t len) {
     size_t n;
 
     /* Ignore empty input. */
